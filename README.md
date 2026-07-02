@@ -24,8 +24,9 @@
 
 - **읽기용 가이드** — `src/`의 `.md` 문서. GitHub에서 Mermaid가 네이티브 렌더링된다.
 - **발표·배포용**
-  - **Marp 발표 덱** — `slides/presentation.md` → HTML/PDF
+  - **발표 덱 (강의용)** — `slides/deck.html` (단일 HTML + React CDN, 방향키로 넘기는 인터랙티브 덱)
   - **React 레이아웃 쇼케이스** — `showcase/index.html` (Part 3의 8개 레이아웃 실물 예시)
+  - **(백업) Marp 발표 덱** — `slides/presentation.md` → HTML/PDF (구버전, 참고용 보관)
 
 ## 폴더 구조
 
@@ -55,14 +56,16 @@ portfolio-guide-v2/
 
 **가이드 읽기** — `src/`의 `.md` 파일을 GitHub에서 순서대로 읽으면 된다.
 
-**발표 덱 빌드** (Marp 필요)
+**발표 덱 (강의용)** — `slides/deck.html`을 브라우저로 열면 된다(CDN 방식, 빌드 불필요). ← → 로 이동.
+
+**레이아웃 쇼케이스** — `showcase/index.html`을 브라우저로 열면 된다(빌드 불필요).
+
+**(백업) Marp 덱 빌드** (Marp 필요, 구버전 참고용)
 ```bash
 cd slides
 marp presentation.md --theme theme.css --no-stdin -o presentation.html --html
 marp presentation.md --theme theme.css --no-stdin --pdf --allow-local-files -o presentation.pdf
 ```
-
-**레이아웃 쇼케이스** — `showcase/index.html`을 브라우저로 열면 된다(빌드 불필요).
 
 ## 크레딧
 

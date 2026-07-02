@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>유니티 개발자 취업·기술 문서 작성 가이드 v2 · 발표 덱</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+
+  :root{
+    --ink:#20233A; --muted:#71768F; --faint:#9AA0B8;
+    --line:#E7E9F4; --paper:#FFFFFF; --bg:#EEF0F8;
+    --indigo:#5B6AD0; --indigo-deep:#3E4CAB; --indigo-mid:#8B95E4;
+    --indigo-soft:#EDEFFB; --indigo-chip:#E0E4FA;
+    --code-bg:#1E2138; --code-fg:#E6E8F5; --code-dim:#8890BE;
+    --ok:#2FA36B; --amber:#CC8207;
+    --sans:'Pretendard','Noto Sans KR',-apple-system,sans-serif;
+    --mono:'JetBrains Mono','D2Coding',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:var(--sans);}
+  html,body{height:100%;background:var(--bg);overflow:hidden;}
+  .mono{font-family:var(--mono);}
+
+  /* ── Stage: 1280×720 무대를 뷰포트에 맞춰 스케일 ── */
+  .stage-wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;}
+  .stage{width:1280px;height:720px;transform-origin:center center;flex:0 0 auto;}
+  .slide{width:1280px;height:720px;position:relative;overflow:hidden;background:var(--paper);
+         box-shadow:0 24px 60px -24px rgba(30,33,58,.35);}
+
+  /* ── 공통 헤더(내용 슬라이드) ── */
+  .head{display:flex;align-items:baseline;justify-content:space-between;
+        border-bottom:1px solid var(--line);padding-bottom:14px;}
+  .eyebrow{font-size:15px;font-weight:800;color:var(--indigo);letter-spacing:.14em;text-transform:uppercase;}
+  .head .rlabel{font-size:15px;color:var(--faint);font-weight:600;}
+  .bignum{font-size:120px;font-weight:800;line-height:.9;color:var(--indigo-chip);letter-spacing:-.03em;}
+  .title-xl{font-size:52px;font-weight:800;color:var(--ink);letter-spacing:-.02em;line-height:1.08;}
+  .title-lg{font-size:40px;font-weight:800;color:var(--ink);letter-spacing:-.02em;line-height:1.1;}
+  .subhead{font-size:22px;font-weight:700;color:var(--indigo);}
+
+  /* ── 모티프 ── */
+  .pill{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--ink);
+        border-radius:999px;padding:7px 18px;font-size:16px;font-weight:700;color:var(--ink);}
+  .banner{display:inline-block;background:var(--indigo);color:#fff;border-radius:10px;
+          padding:8px 18px;font-size:17px;font-weight:700;}
+  .chip{display:inline-block;background:var(--indigo-soft);color:var(--indigo-deep);
+        border-radius:7px;padding:2px 9px;font-weight:700;white-space:nowrap;}
+  .dotrule{display:flex;align-items:center;}
+  .dotrule .ln{height:2px;background:var(--indigo);flex:1;}
+  .dotrule .dot{width:14px;height:14px;border-radius:50%;background:var(--indigo);margin-left:-2px;}
+  .card{background:#FBFBFE;border:1px solid var(--line);border-radius:16px;}
+  .labelchip{display:inline-flex;align-items:center;text-align:center;background:var(--code-bg);
+             color:#fff;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:700;line-height:1.35;}
+  .arrow{color:var(--indigo);font-size:26px;font-weight:800;}
+
+  /* ── 코드 블록 ── */
+  .code{background:var(--code-bg);border-radius:12px;padding:20px 22px;color:var(--code-fg);
+        font-family:var(--mono);font-size:15px;line-height:1.62;overflow:hidden;}
+  .code .k{color:#C4A0FF;} .code .t{color:#7FE0C0;} .code .s{color:#F2B37D;} .code .c{color:var(--code-dim);}
+
+  /* ── 복습용 컴포넌트 ── */
+  /* 설명(Note): 소스 기반 맥락 상시 노출 */
+  .note{background:#FAFBFF;border:1px solid var(--line);border-left:4px solid var(--indigo-mid);
+        border-radius:0 12px 12px 0;padding:14px 18px;}
+  .note .nlabel{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--indigo);text-transform:uppercase;}
+  .note .nbody{margin-top:6px;font-size:16px;line-height:1.6;color:var(--muted);}
+  .note b{color:var(--ink);}
+  /* 인용/원칙 콜아웃 */
+  .callout{background:var(--indigo-soft);border-radius:12px;padding:16px 22px;font-size:18px;color:var(--indigo-deep);line-height:1.6;}
+  .callout b{color:var(--indigo-deep);font-weight:800;}
+  /* 👎👍 비교 — 색 헤더 밴드 + 넓은 본문 */
+  .goodbad{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;}
+  .gb{border-radius:12px;border:1px solid var(--line);overflow:hidden;}
+  .gb.bad{background:#FDF7F6;border-color:#EFCBC6;}
+  .gb.good{background:#F3FBF6;border-color:#C3E6D2;}
+  .gb .gbh{font-size:15px;font-weight:800;color:#fff;padding:9px 16px;}
+  .gb.bad .gbh{background:#CE6A5F;} .gb.good .gbh{background:#3BA776;}
+  .gb .gbbody{padding:6px 16px 10px;}
+  .gb .gbl{font-size:15.5px;line-height:1.58;color:var(--ink);padding:8px 0;word-break:keep-all;}
+  .gb .gbl+.gbl{border-top:1px dashed rgba(0,0,0,.10);}
+  .gb .gbl b{color:var(--indigo-deep);}
+  /* 컴팩트 표 */
+  table.mini{border-collapse:collapse;width:100%;font-size:15.5px;}
+  table.mini th{background:var(--indigo);color:#fff;font-weight:700;text-align:left;padding:9px 14px;}
+  table.mini td{padding:9px 14px;border-bottom:1px solid var(--line);color:var(--ink);vertical-align:top;}
+  table.mini tr:nth-child(even) td{background:#F7F8FD;}
+  table.mini td b{color:var(--indigo-deep);}
+  /* 체크리스트 */
+  .checklist{display:flex;flex-direction:column;gap:10px;}
+  .checklist .ci{display:flex;gap:12px;align-items:flex-start;font-size:16.5px;color:var(--ink);}
+  .checklist .cb{flex:0 0 auto;width:22px;height:22px;border-radius:6px;background:var(--indigo-soft);
+                 color:var(--indigo-deep);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;}
+  .checklist .ci b{color:var(--indigo-deep);}
+  /* 레퍼런스 카드 그리드 */
+  .refcard{display:grid;gap:12px;}
+  .refcard .rc{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#FBFBFE;}
+  .refcard .rc .rch{font-size:15px;font-weight:800;color:var(--ink);}
+  .refcard .rc .rcd{font-size:13.5px;color:var(--muted);margin-top:4px;line-height:1.45;}
+  .wire{border:1.5px solid var(--indigo-mid);border-radius:8px;background:#fff;height:64px;position:relative;overflow:hidden;}
+  .wire i{position:absolute;background:var(--indigo-soft);border-radius:3px;display:block;}
+  /* 결정 트리 */
+  .dtree{display:flex;flex-direction:column;gap:10px;}
+  .dtree .q{background:var(--code-bg);color:#fff;border-radius:10px;padding:10px 16px;font-weight:700;font-size:16px;display:inline-block;}
+  .dtree .branch{display:flex;align-items:center;gap:12px;padding-left:24px;}
+  .dtree .ans{color:var(--indigo);font-weight:800;font-size:15px;min-width:150px;}
+  /* 프롬프트 카드 */
+  .pcard{background:#F7F8FD;border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+  .pcard .ph{background:var(--indigo);color:#fff;font-size:13px;font-weight:800;padding:8px 14px;letter-spacing:.04em;}
+  .pcard .pb{font-family:var(--mono);font-size:13px;line-height:1.55;color:var(--ink);padding:12px 14px;white-space:pre-wrap;}
+  .pcard .pb .ph-brk{color:var(--indigo-deep);font-weight:700;}
+  /* 비유 박스 */
+  .metaphor{background:#F5F6FE;border:1px dashed var(--indigo-mid);border-radius:12px;padding:14px 18px;}
+  .metaphor .mh{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:.02em;}
+  .metaphor .mtag{display:inline-block;background:var(--indigo);color:#fff;font-size:11px;font-weight:800;
+                  border-radius:5px;padding:2px 7px;margin-right:6px;vertical-align:1px;}
+  .metaphor .mb{margin-top:7px;font-size:15px;color:var(--ink);line-height:1.58;}
+  .metaphor .mb b{color:var(--indigo-deep);}
+  /* 개념 서술 문단 */
+  .note .nbody,.callout,.metaphor .mb,.concept,.gb .gbl,li{word-break:keep-all;}
+  .concept{font-size:16px;line-height:1.62;color:var(--ink);}
+  .concept b{color:var(--indigo-deep);}
+  .concept .lead{color:var(--muted);}
+  .kv{display:flex;gap:10px;margin-top:10px;}
+  .kv .k{flex:0 0 auto;width:74px;font-weight:800;color:var(--indigo);font-size:15px;}
+  .kv .v{font-size:15px;color:var(--ink);line-height:1.5;}
+
+  ul{list-style:none;} li{position:relative;padding-left:18px;}
+  li::before{content:'';position:absolute;left:2px;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--indigo-mid);}
+  li.sub{padding-left:16px;color:var(--muted);font-size:.92em;}
+  li.sub::before{background:none;content:'–';left:0;top:0;color:var(--faint);}
+
+  /* ── HUD ── */
+  .hud{position:fixed;left:0;right:0;bottom:0;height:44px;display:flex;align-items:center;
+       gap:16px;padding:0 22px;background:rgba(255,255,255,.86);backdrop-filter:blur(6px);
+       border-top:1px solid var(--line);z-index:10;}
+  .hud button{border:1px solid var(--line);background:#fff;border-radius:8px;width:32px;height:30px;
+              font-size:16px;color:var(--ink);cursor:pointer;line-height:1;}
+  .hud button:hover{border-color:var(--indigo);color:var(--indigo);}
+  .hud .count{font-size:14px;font-weight:700;color:var(--muted);min-width:64px;}
+  .hud .secname{font-size:13px;color:var(--faint);font-weight:600;}
+  .hud .prog{flex:1;height:5px;background:var(--line);border-radius:3px;overflow:hidden;}
+  .hud .prog>span{display:block;height:100%;background:var(--indigo);transition:width .2s;}
+  .hud .hint{font-size:12px;color:var(--faint);}
+  .hud button.mode{width:auto;padding:0 12px;font-size:13px;font-weight:700;}
+
+  /* ── 복습본(인쇄) 모드 ── */
+  body.printing{overflow:auto;}
+  .booklet{display:flex;flex-direction:column;align-items:center;gap:20px;padding:60px 0 64px;zoom:.62;}
+  .booklet .slide{box-shadow:0 10px 30px -16px rgba(30,33,58,.3);}
+  .printbar{position:fixed;top:0;left:0;right:0;height:48px;z-index:20;display:flex;align-items:center;
+            justify-content:center;gap:14px;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);
+            border-bottom:1px solid var(--line);}
+  .printbar button{border:1px solid var(--indigo);background:var(--indigo);color:#fff;border-radius:8px;
+                   padding:8px 16px;font-size:14px;font-weight:700;cursor:pointer;}
+  .printbar a{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;
+              padding:8px 16px;font-size:14px;font-weight:700;text-decoration:none;}
+  .printbar .ph{font-size:13px;color:var(--muted);}
+  @media print{
+    @page{size:1280px 720px;margin:0;}
+    html,body{overflow:visible;background:#fff;}
+    .hud,.printbar{display:none !important;}
+    .booklet{gap:0;padding:0;zoom:1;}
+    .booklet .slide{box-shadow:none;break-after:page;page-break-after:always;}
+    .booklet .slide:last-child{break-after:auto;}
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useCallback} = React;
+
+/* ── C# 라이트 신택스 하이라이터 ── */
+// 키워드·타입을 한 번의 패스로 치환 → 주입된 태그(class="…") 안의 단어가 재매칭되지 않도록.
+const TOKENS = /\b(namespace|public|private|sealed|class|interface|void|var|event|return|if|else|null|readonly|new|this|true|false|get|set)\b|\b(Action|Func|IReadOnlyList|Recipe|Inventory|Item|ItemStack|CraftingResult|CraftingManager|ICraftingService|float|string|bool|int)\b/g;
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function hlLine(line){
+  const ci = line.indexOf('//');
+  let codePart = ci>=0 ? line.slice(0,ci) : line;
+  let comment = ci>=0 ? line.slice(ci) : '';
+  let s = esc(codePart);
+  // 문자열(한글 포함) 먼저 보호
+  const strs=[]; s = s.replace(/"[^"]*"/g,m=>{strs.push(m);return ` ${strs.length-1} `;});
+  s = s.replace(TOKENS,(m,k,t)=> k?`<span class="k">${k}</span>`:`<span class="t">${t}</span>`);
+  s = s.replace(/ (\d+) /g,(_,i)=>`<span class="s">${strs[+i]}</span>`);
+  if(comment) s += `<span class="c">${esc(comment)}</span>`;
+  return s;
+}
+const Code = ({children}) => (
+  <div className="code">
+    {children.replace(/^\n/,'').replace(/\n\s*$/,'').split('\n').map((ln,i)=>(
+      <div key={i} dangerouslySetInnerHTML={{__html: hlLine(ln)||'&nbsp;'}} />
+    ))}
+  </div>
+);
+
+/* ── 공통 조각 ── */
+const Head = ({eyebrow,rlabel}) => (
+  <div className="head">
+    <span className="eyebrow">{eyebrow}</span>
+    {rlabel && <span className="rlabel">{rlabel}</span>}
+  </div>
+);
+const DotRule = ({style}) => (
+  <div className="dotrule" style={style}><span className="ln"/><span className="dot"/></div>
+);
+
+/* ── 복습용 컴포넌트 ── */
+// 설명 블록: 소스 기반 맥락. children은 JSX(<b> 강조 포함).
+const Note = ({label='설명', children, style}) => (
+  <div className="note" style={style}>
+    <div className="nlabel">{label}</div>
+    <div className="nbody">{children}</div>
+  </div>
+);
+const Callout = ({children, style}) => (
+  <div className="callout" style={style}>{children}</div>
+);
+// 👎👍 비교: bad/good 각각 문자열 배열
+const GoodBad = ({bad, good, badTitle='👎 아쉬운 예', goodTitle='👍 좋은 예', style}) => (
+  <div className="goodbad" style={style}>
+    <div className="gb bad">
+      <div className="gbh">{badTitle}</div>
+      <div className="gbbody">{bad.map((x,i)=><div key={i} className="gbl" dangerouslySetInnerHTML={{__html:x}}/>)}</div>
+    </div>
+    <div className="gb good">
+      <div className="gbh">{goodTitle}</div>
+      <div className="gbbody">{good.map((x,i)=><div key={i} className="gbl" dangerouslySetInnerHTML={{__html:x}}/>)}</div>
+    </div>
+  </div>
+);
+// 컴팩트 표: head=[], rows=[[...]]
+const MiniTable = ({head, rows, style}) => (
+  <table className="mini" style={style}>
+    <thead><tr>{head.map((h,i)=><th key={i}>{h}</th>)}</tr></thead>
+    <tbody>{rows.map((r,i)=><tr key={i}>{r.map((c,j)=><td key={j} dangerouslySetInnerHTML={{__html:c}}/>)}</tr>)}</tbody>
+  </table>
+);
+// 체크리스트: items 문자열 배열
+const Checklist = ({items, style}) => (
+  <div className="checklist" style={style}>
+    {items.map((x,i)=>(
+      <div key={i} className="ci"><span className="cb">✓</span>
+        <span dangerouslySetInnerHTML={{__html:x}}/></div>
+    ))}
+  </div>
+);
+// 프롬프트 카드
+const PromptCard = ({title, body, style}) => (
+  <div className="pcard" style={style}>
+    <div className="ph">{title}</div>
+    <div className="pb">{body}</div>
+  </div>
+);
+// 비유 박스
+const MetaphorBox = ({title='비유', children, style}) => (
+  <div className="metaphor" style={style}>
+    <div className="mh"><span className="mtag">비유</span> {title}</div>
+    <div className="mb">{children}</div>
+  </div>
+);
+// 밀도 높은 개념 슬라이드: (상) 개념 | 비유  →  (하) 전폭 👎👍  →  팁
+const ConceptSlide = ({eyebrow, rlabel, title, pill, concept, metaphor, bad, good, badTitle, goodTitle, tip, tipLabel='팁'}) => (
+  <div className="slide" style={{padding:'34px 56px',display:'flex',flexDirection:'column'}}>
+    <Head eyebrow={eyebrow} rlabel={rlabel}/>
+    <div style={{display:'flex',alignItems:'center',gap:14,marginTop:12}}>
+      <div className="title-lg" style={{fontSize:29}}>{title}</div>
+      {pill && <span className="pill">{pill}</span>}
+    </div>
+    <div style={{display:'flex',gap:24,marginTop:14,alignItems:'stretch'}}>
+      <div className="concept" style={{flex:1.3,minWidth:0}}>{concept}</div>
+      {metaphor && <div style={{flex:1,minWidth:0,display:'flex'}}><MetaphorBox title={metaphor.title} style={{width:'100%'}}>{metaphor.body}</MetaphorBox></div>}
+    </div>
+    <div style={{marginTop:16,display:'flex',flexDirection:'column',justifyContent:'center',flex:1,minHeight:0}}>
+      <GoodBad bad={bad} good={good} badTitle={badTitle} goodTitle={goodTitle}/>
+    </div>
+    {tip && <Note label={tipLabel}>{tip}</Note>}
+  </div>
+);
+
+/* ═══════════════ 슬라이드 ═══════════════ */
+
+// 00 표지 (에디토리얼 미니멀)
+const Cover = () => (
+  <div className="slide" style={{padding:'70px 84px',display:'flex',flexDirection:'column'}}>
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',
+                 borderBottom:'1px solid var(--line)',paddingBottom:'16px'}}>
+      <span className="eyebrow">Unity Developer · Career &amp; Tech-Doc Guide</span>
+      <span style={{color:'var(--faint)',fontWeight:700}}>v2 · 2026</span>
+    </div>
+    <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'center'}}>
+      <div style={{fontSize:64,fontWeight:800,lineHeight:1.14,letterSpacing:'-.03em',color:'var(--ink)'}}>
+        무엇을 쓸지에 더해,<br/>
+        <span style={{color:'var(--indigo)'}}>어떻게 보여줄지</span>까지.
+      </div>
+      <div style={{marginTop:24,fontSize:24,color:'var(--muted)',fontWeight:600}}>
+        유니티 개발자를 위한 취업·기술 문서 작성 가이드
+      </div>
+    </div>
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
+      <div>
+        <div style={{fontSize:14,fontWeight:800,letterSpacing:'.12em',color:'var(--faint)'}}>GUIDE BY</div>
+        <div style={{fontSize:30,fontWeight:800,color:'var(--ink)',marginTop:4}}>김재훈 <span style={{color:'var(--indigo)'}}>Jay · KooHoo</span></div>
+      </div>
+      <table style={{fontSize:15,borderCollapse:'collapse'}}>
+        <tbody>
+          {[['SUBJECT','문서 · 레이아웃 · 다이어그램 · AI'],['STACK','Markdown · Mermaid · React'],['EXAMPLE','Crafting System']].map(([k,v])=>(
+            <tr key={k}>
+              <td style={{color:'var(--faint)',fontWeight:800,letterSpacing:'.08em',padding:'5px 24px 5px 0'}}>{k}</td>
+              <td style={{color:'var(--ink)',fontWeight:600,borderLeft:'2px solid var(--indigo)',paddingLeft:16}}>{v}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+);
+
+// 01 목차
+const Contents = () => {
+  const items=[['1','취업 문서','이력서·자소서·포트폴리오'],['2','기술 문서','개요→구조→기능→선택→회고'],
+    ['3','레이아웃','정보를 잘 전달하는 화면'],['4','Mermaid','코드로 그리는 다이어그램'],
+    ['5','AI 워크플로우','챗봇으로 문서 가속'],['6','프롬프트','복사해 쓰는 한글 프롬프트']];
+  return (
+    <div className="slide" style={{padding:'64px 84px',display:'flex',flexDirection:'column'}}>
+      <div style={{fontSize:60,fontWeight:800,color:'var(--ink)',letterSpacing:'-.02em'}}>CONTENTS</div>
+      <DotRule style={{margin:'20px 0 40px'}}/>
+      <div style={{flex:1,display:'grid',gridTemplateColumns:'1fr 1fr',gap:'22px 56px',alignContent:'center'}}>
+        {items.map(([n,t,d])=>(
+          <div key={n} style={{display:'flex',alignItems:'center',gap:20,borderBottom:'1px solid var(--line)',paddingBottom:16}}>
+            <div style={{width:44,height:44,borderRadius:12,background:'var(--indigo-soft)',color:'var(--indigo-deep)',
+                         display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,fontSize:22,flex:'0 0 auto'}}>{n}</div>
+            <div>
+              <div style={{fontSize:23,fontWeight:800,color:'var(--ink)'}}>{t}</div>
+              <div style={{fontSize:15,color:'var(--muted)'}}>{d}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// 섹션 구분(디바이더) — 풀블리드 인디고 + 라운드 카드
+const Divider = ({part,title,agenda}) => (
+  <div className="slide" style={{background:'var(--indigo)',padding:'0'}}>
+    <div style={{position:'absolute',inset:0,padding:'0 84px',display:'flex',alignItems:'center'}}>
+      <div style={{flex:1}}>
+        <div style={{color:'var(--indigo-chip)',fontWeight:800,letterSpacing:'.16em',fontSize:20}}>{part}</div>
+        <div style={{color:'#fff',fontSize:60,fontWeight:800,letterSpacing:'-.02em',lineHeight:1.1,marginTop:10,whiteSpace:'pre-line'}}>{title}</div>
+      </div>
+    </div>
+    {agenda && (
+      <div className="card" style={{position:'absolute',right:0,top:60,bottom:60,width:440,
+           borderTopRightRadius:0,borderBottomRightRadius:0,padding:'48px 44px',display:'flex',flexDirection:'column',justifyContent:'center'}}>
+        <div style={{alignSelf:'flex-end',fontSize:34,fontWeight:800,color:'var(--indigo)'}}>{agenda.label}</div>
+        <DotRule style={{margin:'16px 0 22px'}}/>
+        <ul style={{display:'flex',flexDirection:'column',gap:12,fontSize:19,color:'var(--ink)',fontWeight:600}}>
+          {agenda.items.map((x,i)=><li key={i}>{x}</li>)}
+        </ul>
+      </div>
+    )}
+  </div>
+);
+
+// 03 오리엔테이션 — 6파트 + 두 산출물
+const Orientation = () => {
+  const parts=[['1','취업 문서'],['2','기술 문서'],['3','레이아웃'],['4','Mermaid'],['5','AI 워크플로우'],['6','프롬프트']];
+  return (
+    <div className="slide" style={{padding:'52px 72px',display:'flex',flexDirection:'column'}}>
+      <Head eyebrow="Part 0 · Orientation" rlabel="이 가이드가 다루는 것"/>
+      <div style={{display:'flex',gap:36,marginTop:24}}>
+        <div style={{flex:1.2}}>
+          <div className="title-lg" style={{fontSize:32}}>6개 파트, 하나의 흐름</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,marginTop:22}}>
+            {parts.map(([n,t])=>(
+              <div key={n} className="card" style={{padding:'16px 18px',display:'flex',alignItems:'center',gap:14}}>
+                <span style={{fontSize:26,fontWeight:800,color:'var(--indigo-mid)'}}>{n}</span>
+                <span style={{fontSize:20,fontWeight:700,color:'var(--ink)'}}>{t}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{flex:1,display:'flex',flexDirection:'column',gap:16}}>
+          <div className="title-lg" style={{fontSize:32}}>두 산출물, 하나의 소스</div>
+          <div className="card" style={{padding:'18px 20px'}}>
+            <div className="chip">Markdown 소스</div>
+            <div style={{marginTop:10,color:'var(--muted)',fontSize:17}}>GitHub에서 바로 읽기 · Mermaid 네이티브 렌더링</div>
+          </div>
+          <div style={{textAlign:'center',color:'var(--indigo)',fontWeight:800}}>↓ 파생</div>
+          <div className="card" style={{padding:'18px 20px'}}>
+            <div className="chip">발표 덱 · React 쇼케이스</div>
+            <div style={{marginTop:10,color:'var(--muted)',fontSize:17}}>슬라이드 / 레이아웃 실물 → HTML 배포</div>
+          </div>
+          <div style={{background:'var(--indigo-soft)',borderRadius:12,padding:'14px 18px',fontSize:17,color:'var(--indigo-deep)',fontWeight:600}}>
+            Markdown으로 <b>한 번</b> 쓰면 읽기용·발표용을 <b>동시에</b> 얻습니다.
+          </div>
+        </div>
+      </div>
+      <Note style={{marginTop:'auto'}}>이 가이드의 규칙은 <b>법칙이 아닙니다.</b> 목적은 하나 — <b>잘 읽히는 문서로 "함께 일하고 싶은 개발자"임을 증명</b>하는 것. 이 문서 자체가 예시입니다: Markdown 소스 하나로 읽기용 가이드·발표 덱·React 쇼케이스를 모두 만들었고, 여러분도 같은 구조를 그대로 따라 하면 됩니다.</Note>
+    </div>
+  );
+};
+
+// [신규] 학습 경로 — 목표별로 어디부터
+const LearnPath = () => (
+  <div className="slide" style={{padding:'52px 72px',display:'flex',flexDirection:'column'}}>
+    <Head eyebrow="Part 0 · Orientation" rlabel="어디부터 볼까 — 학습 경로"/>
+    <div className="title-xl" style={{marginTop:22}}>내 상황에 맞는 <span style={{color:'var(--indigo)'}}>순서</span>로 보세요</div>
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:18,marginTop:30,flex:1}}>
+      {[['당장 취업 준비','지원이 코앞이라면','Part 1 → Part 2 → Part 3','취업 문서부터 갖추고, 기술 문서·레이아웃으로 완성도를 올립니다.'],
+        ['문서가 안 읽힌다','내용은 있는데 전달이 약하다면','Part 2 → Part 3 → Part 4','5단 구조로 다시 짜고, 레이아웃·다이어그램으로 "보이게" 만듭니다.'],
+        ['속도를 높이고 싶다','반복 작업을 줄이고 싶다면','Part 5 → Part 6 → Part 4','AI 워크플로우와 프롬프트로 초안을 빠르게, 다이어그램까지 자동화.']].map(([t,cond,path,desc],i)=>(
+        <div key={i} className="card" style={{padding:'24px 24px',display:'flex',flexDirection:'column'}}>
+          <div style={{width:40,height:40,borderRadius:'50%',background:'var(--indigo)',color:'#fff',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,fontSize:18}}>{i+1}</div>
+          <div style={{marginTop:14,fontSize:21,fontWeight:800,color:'var(--ink)'}}>{t}</div>
+          <div style={{marginTop:4,fontSize:15,color:'var(--muted)'}}>{cond}</div>
+          <div style={{marginTop:14}}><span className="banner" style={{fontSize:15}}>{path}</span></div>
+          <div style={{marginTop:14,fontSize:15.5,color:'var(--ink)',lineHeight:1.55}}>{desc}</div>
+        </div>
+      ))}
+    </div>
+    <Callout style={{marginTop:20}}>어느 경로든 종착점은 같습니다 — <b>내 코드를 설명할 줄 아는 개발자</b>임을 문서로 증명하는 것.</Callout>
+  </div>
+);
+
+// 05 취업 문서
+const JobDocs = () => (
+  <div className="slide" style={{padding:'52px 72px',display:'flex',flexDirection:'column'}}>
+    <Head eyebrow="Part 1 · 취업 문서" rlabel="이력서 · 자소서 · 포트폴리오"/>
+    <div className="bignum" style={{position:'absolute',right:64,top:36,fontSize:150}}>01</div>
+    <div className="title-xl" style={{marginTop:26}}>실물로 <span style={{color:'var(--indigo)'}}>증명</span>하는 세 문서</div>
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:18,marginTop:28}}>
+      {[['이력서','1~2p, 한눈에 핵심 역량','기술 스택은 별점 금지 · 경험 중심'],
+        ['자기소개서','원천 소스 → 문항 매핑','STAR (상황·과제·행동·결과)'],
+        ['포트폴리오','실물로 증명','자격증보다 훨씬 중요']].map(([t,a,b])=>(
+        <div key={t} className="card" style={{padding:'20px 22px'}}>
+          <div className="banner" style={{fontSize:16}}>{t}</div>
+          <div style={{marginTop:14,fontSize:18,fontWeight:700,color:'var(--ink)'}}>{a}</div>
+          <div style={{marginTop:8,fontSize:16,color:'var(--muted)'}}>{b}</div>
+        </div>
+      ))}
+    </div>
+    <Note style={{marginTop:26}} label="핵심">세 문서의 <b>중심은 포트폴리오</b> — 실력을 실물로 증명하기 때문입니다. 자기소개서는 <b>'원천 소스'를 먼저 한 번 정리</b>해 두면 잡코리아·사람인·자유 양식 어디든 문항에 맞춰 재조립할 수 있습니다. 이력서의 기술 스택은 <b>별점(★)이 아니라 경험</b>으로 씁니다.</Note>
+  </div>
+);
+
+// [신규] Part 1 — 기술 스택 표기 👎👍
+const SkillWriting = () => (
+  <div className="slide" style={{padding:'52px 72px',display:'flex',flexDirection:'column'}}>
+    <Head eyebrow="Part 1 · 취업 문서" rlabel="기술 스택은 '경험'으로"/>
+    <div className="title-xl" style={{marginTop:18}}>별점 대신 <span style={{color:'var(--indigo)'}}>무엇을 했는지</span></div>
+    <div className="concept" style={{marginTop:12}}>이력서·자기소개서에서 기술 스택을 <b>점수(★·상중하)</b>로 매기는 순간, 근거 없는 자기평가가 됩니다. 같은 기술이라도 <b>"무엇을, 어떻게, 왜"</b>를 담은 경험 한 줄로 바꾸세요.</div>
+    <div style={{flex:1,display:'flex',alignItems:'center'}}>
+      <GoodBad style={{width:'100%'}}
+        bad={['Unity ★★★☆☆','C# ★★☆☆☆','Firebase (中)','"많이 다뤄봤습니다"']}
+        good={['Unity — <b>FSM 전투·Wave 시스템</b> 설계·구현','C# — <b>이벤트 기반·ScriptableObject</b> 구조 설계','Firebase — <b>인증·실시간 DB</b> 연동 구현','"낯선 API를 <b>어떻게 익혀 적용</b>했는지" 서술']}/>
+    </div>
+    <Note label="왜">점수는 <b>주관적이고 검증 불가</b>합니다. 면접관은 "무엇을, 어떻게, 왜"를 봅니다 — 같은 Unity라도 <b>구체적 경험 한 줄</b>이 별 다섯 개보다 강합니다. 실제 활동이 없는 링크·과장은 오히려 신뢰를 깎습니다.</Note>
+  </div>
+);
+
+// [신규] Part 1 — STAR 시각 템플릿
+const StarTemplate = () => (
+  <div className="slide" style={{padding:'52px 72px',display:'flex',flexDirection:'column'}}>
+    <Head eyebrow="Part 1 · 자기소개서" rlabel="경험 서술 = STAR"/>
+    <div style={{display:'flex',alignItems:'center',gap:16,marginTop:22}}>
+      <div className="title-lg">STAR 서사 구조</div>
+      <span className="pill">상황 · 과제 · 행동 · 결과</span>
+    </div>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:14,marginTop:24,flex:1}}>
+      {[['S','상황(Situation)','팀 프로젝트에서 Fusion 네트워크를 처음 도입'],
+        ['T','과제(Task)','낯선 동기화 개념·복잡한 API — 핵심 기능이라 물러설 수 없었음'],
+        ['A','행동(Action)','공식 문서·샘플을 분해해 최소 예제부터 재현, 팀에 구조 공유'],
+        ['R','결과(Result)','핵심 동기화 구현 완료 + 팀의 네트워크 이해도 상승']].map(([k,t,d],i)=>(
+        <div key={k} className="card" style={{padding:'20px 18px',display:'flex',flexDirection:'column'}}>
+          <div style={{width:38,height:38,borderRadius:10,background:'var(--indigo-soft)',color:'var(--indigo-deep)',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,fontSize:20}}>{k}</div>
+          <div style={{marginTop:12,fontSize:17,fontWeight:800,color:'var(--ink)'}}>{t}</div>
+          <div style={{marginTop:8,fontSize:15,color:'var(--muted)',lineHeight:1.5}}>{d}</div>
+        </div>
+      ))}
+    </div>
+    <Note style={{marginTop:20}} label="왜">'어려웠다'로 끝내지 말고 <b>어떻게 극복했는지</b>를 보여주세요. 기술 부채를 인지하고 개선을 제시하는 것도 <b>성숙한 엔지니어링 태도</b>의 증거입니다.</Note>
+  </div>
+);
+
+// [신규] Part 1 — 이력서 체크리스트
+const ResumeChecklist = () => (
+  <div className="slide" style={{padding:'52px 72px',display:'flex',flexDirection:'column'}}>
+    <Head eyebrow="Part 1 · 취업 문서" rlabel="제출 전 점검"/>
+    <div className="title-xl" style={{marginTop:22}}>내 이력서, <span style={{color:'var(--indigo)'}}>준비됐나?</span></div>
+    <div style={{display:'flex',gap:30,marginTop:28,flex:1}}>
+      <Checklist style={{flex:1}} items={[
+        '1~2페이지로 <b>한눈에</b> 핵심 역량이 보이는가',
+        '기술 스택을 <b>점수화(★)하지 않고</b> 경험으로 썼는가',
+        '증명사진은 <b>정장·스튜디오</b> 촬영본인가',
+        '넣은 <b>링크가 실제로 동작</b>하고 내 활동이 있는가',
+        '파일명이 <b>날짜_이름_문서_버전</b> 규칙인가',
+      ]}/>
+      <div style={{flex:1,display:'flex',flexDirection:'column',gap:14}}>
+        <div className="banner">파일명 예시</div>
+        <div className="card mono" style={{padding:'18px 20px',fontSize:17,color:'var(--ink)'}}>2025-07-01_김재훈_이력서_v1.pdf</div>
+        <Callout style={{marginTop:'auto'}}>이력서는 <b>사실의 기록</b>, 자기소개서는 <b>서사</b>, 포트폴리오는 <b>증거</b> — 세 문서의 역할을 섞지 마세요.</Callout>
+      </div>
+    </div>
+  </div>
+);
+
+// 07 기술문서 5단 구조 (개요형 · pill flow + chips)
+const FiveStruct = () => (
+  <div className="slide" style={{padding:'52px 72px',display:'flex',flexDirection:'column'}}>
+    <Head eyebrow="Part 2 · 기술 문서" rlabel="5단 구조"/>
+    <div className="title-xl" style={{marginTop:24}}>기술 문서의 <span style={{color:'var(--indigo)'}}>5단 구조</span></div>
+    <div style={{display:'flex',alignItems:'center',gap:12,margin:'26px 0 4px',flexWrap:'wrap'}}>
+      {['개요','시스템 구조','핵심 기능','고민과 선택','결과·회고'].map((s,i)=>(
+        <React.Fragment key={s}>
+          <span className="banner">{i+1}. {s}</span>
+          {i<4 && <span className="arrow">→</span>}
+        </React.Fragment>
+      ))}
+    </div>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:14,marginTop:22,flex:1}}>
+      {[['무엇을·왜','결론부터, 10초 안에'],['구성요소·관계·흐름','다이어그램으로'],
+        ['사용법(API)+동작','코드 설명'],['대안 비교','‘왜’의 근거'],['데이터로 증명','기술 부채·개선']].map(([a,b],i)=>(
+        <div key={i} className="card" style={{padding:'18px 16px'}}>
+          <div style={{fontSize:15,fontWeight:800,color:'var(--indigo)'}}>STEP {i+1}</div>
+          <div style={{marginTop:10,fontSize:18,fontWeight:700,color:'var(--ink)',lineHeight:1.35}}>{a}</div>
+          <div style={{marginTop:8,fontSize:15,color:'var(--muted)'}}>{b}</div>
+        </div>
+      ))}
+    </div>
+    <div style={{marginTop:22,background:'var(--indigo-soft)',borderRadius:12,padding:'16px 22px',fontSize:19,color:'var(--indigo-deep)'}}>
+      목적은 <b>“코드를 짤 줄 안다”</b>가 아니라 <b>“내 코드를 설명할 줄 안다”</b> = 함께 일할 수 있다.
+    </div>
+  </div>
+);
+
+// 예시 헤더 (완성 문서 워크스루)
+const ExHead = ({sub,label}) => (
+  <>
+    <Head eyebrow="Part 2 · 예시 — Crafting System" rlabel="완성 기술 문서 워크스루"/>
+    <div style={{display:'flex',alignItems:'center',gap:18,marginTop:22}}>
+      <div className="title-lg">{sub}</div>
+      <span className="pill">{label}</span>
+    </div>
+  </>
+);
+
+// 08 예시: 개요
+const ExOverview = () => (
+  <div className="slide" style={{padding:'52px 72px',display:'flex',flexDirection:'column'}}>
+    <ExHead sub="① 개요" label="What / Why"/>
+    <div style={{display:'flex',gap:36,marginTop:26,flex:1}}>
+      <div className="card" style={{flex:1,padding:'26px 30px'}}>
+        {[['프로젝트','아이템 크래프팅 시스템'],['핵심 규칙','확률 성공 · 실패 시 재료 50% 소비 · 이벤트 전파'],
+          ['네임스페이스','Game.Crafting'],['기간·환경','Unity 2022.3 · C# 10']].map(([k,v])=>(
+          <div key={k} style={{display:'flex',gap:20,padding:'12px 0',borderBottom:'1px solid var(--line)'}}>
+            <div style={{width:110,color:'var(--indigo)',fontWeight:800,flex:'0 0 auto'}}>{k}</div>
+            <div style={{color:'var(--ink)',fontWeight:600}}>{v}</div>
+          </div>
+        ))}
+        <div style={{marginTop:18,fontSize:17,color:'var(--muted)',lineHeight:1.6}}>
+          재료를 소비해 아이템을 <span className="chip">확률 제작</span>하고, 결과는 <span className="chip">이벤트</span>로
+          UI·사운드·통계에 전파합니다.
+        </div>
+      </div>
+      <div style={{flex:1,display:'flex',flexDirection:'column',gap:14}}>
+        <div className="banner">예시 레시피</div>
+        <div className="card" style={{padding:'26px',display:'flex',alignItems:'center',justifyContent:'center',gap:14,fontSize:22,fontWeight:700}}>
+          <span className="chip">나무 ×3</span><span>+</span><span className="chip">돌 ×2</span>
+          <span className="arrow">→</span><span className="chip">돌도끼 ×1</span>
+        </div>
+        <div style={{fontSize:16,color:'var(--muted)',textAlign:'center'}}>successRate 0.8</div>
+        <div style={{marginTop:'auto',background:'var(--indigo-soft)',borderRadius:12,padding:'16px 20px',fontSize:17,color:'var(--indigo-deep)'}}>
+          <b>개요의 목적</b> — 읽는 사람이 <b>10초 안에</b> “무엇을, 왜”를 알게 하는 것.
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// 다이어그램 + 서사 레이아웃
+const DiagramNarrative = ({eyebrow,rlabel,title,label,img,imgStyle,steps}) => (
+  <div className="slide" style={{padding:'44px 60px',display:'flex',flexDirection:'column'}}>
+    <Head eyebrow={eyebrow} rlabel={rlabel}/>
+    <div style={{display:'flex',alignItems:'center',gap:16,margin:'16px 0 4px'}}>
+      <div className="title-lg" style={{fontSize:34}}>{title}</div>
+      {label && <span className="pill">{label}</span>}
+    </div>
+    <div style={{display:'flex',gap:34,flex:1,minHeight:0,marginTop:12}}>
+      <div style={{flex:'0 0 40%',display:'flex',flexDirection:'column',gap:16,justifyContent:'center'}}>
+        {steps.map((s,i)=>(
+          <div key={i}>
+            <div style={{fontSize:19,fontWeight:800,color:'var(--indigo)'}}>{s.h}</div>
+            <ul style={{marginTop:6,display:'flex',flexDirection:'column',gap:5,fontSize:16.5,color:'var(--ink)'}}>
+              {s.items.map((x,j)=><li key={j} dangerouslySetInnerHTML={{__html:x}}/>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <div className="card" style={{flex:1,minWidth:0,display:'flex',alignItems:'center',justifyContent:'center',padding:20,background:'#fff'}}>
+        <img src={img} style={{maxWidth:'100%',maxHeight:'100%',objectFit:'contain',...imgStyle}}/>
+      </div>
+    </div>
+  </div>
+);
+
+// 09 예시: 시스템 구조 (클래스 다이어그램)
+const ExStructure = () => (
+  <DiagramNarrative
+    eyebrow="Part 2 · 예시 — Crafting System" rlabel="완성 기술 문서 워크스루"
+    title="② 시스템 구조" label="클래스 다이어그램"
+    img="images/class.png"
+    steps={[
+      {h:'무엇으로 이루어졌나',items:[
+        'Manager · Recipe · Inventory · UI 등 <b>8개 클래스</b>로 구성',
+        '<span class="chip">Recipe</span>는 재료·결과·성공확률을 담는 데이터 홀더']},
+      {h:'느슨한 결합 (DIP)',items:[
+        'CraftingUI는 구현체가 아닌 <b>ICraftingService</b>에 의존(점선)',
+        '결과는 <b>OnCraftCompleted</b> 이벤트로 전파 — 직접 호출 없음']},
+    ]}/>
+);
+
+// 10 예시: 핵심 기능 (코드 + 라벨칩 + 화살표)
+const ExFeature = () => (
+  <div className="slide" style={{padding:'44px 60px',display:'flex',flexDirection:'column'}}>
+    <ExHead sub="③ 핵심 기능" label="RequestCraft"/>
+    <div style={{display:'flex',gap:30,flex:1,minHeight:0,marginTop:20}}>
+      <div style={{flex:1.35,minWidth:0}}>
+        <Code>{`
+public void RequestCraft(string recipeId)
+{
+    var recipe = FindRecipe(recipeId);              // LINQ 조회
+    if (recipe == null) { Publish(Fail); return; }
+
+    // (Why) 소비 전 검증 → 재료 유실 방지
+    if (!inventory.HasIngredients(recipe.Ingredients))
+    { Publish(Fail); return; }
+
+    var success = roll() < recipe.SuccessRate;      // 주입 → 테스트 가능
+    inventory.Consume(recipe.Ingredients, success ? 1.0f : 0.5f);
+    if (success) inventory.Add(recipe.Result);
+
+    Publish(success ? Success : Fail);              // 이벤트 발행
+}`}</Code>
+      </div>
+      <div style={{flex:1,display:'flex',flexDirection:'column',gap:16,justifyContent:'center'}}>
+        {[['소비 전 검증','재료를 쓰기 전에 먼저 확인 → 실패해도 유실 없음'],
+          ['roll 주입','확률 판정을 외부 주입 → 결정론적 단위 테스트'],
+          ['소비율 분기','성공 100% · 실패 50% 소비로 페널티 규칙 표현'],
+          ['이벤트 발행','한 곳(Publish)에 모아 UI·사운드에 느슨히 전파']].map(([a,b])=>(
+          <div key={a} style={{display:'flex',alignItems:'center',gap:14}}>
+            <div className="labelchip" style={{width:120,flex:'0 0 auto',justifyContent:'center'}}>{a}</div>
+            <span className="arrow">→</span>
+            <div style={{fontSize:16.5,color:'var(--ink)'}}>{b}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+// 11 예시: 고민과 선택 (비교)
+const ExTradeoff = () => (
+  <div className="slide" style={{padding:'52px 72px',display:'flex',flexDirection:'column'}}>
+    <ExHead sub="④ 고민과 선택" label="결과 전파 방식"/>
+    <div style={{fontSize:19,color:'var(--muted)',marginTop:18}}>“그냥”은 금지 — 면접관이 가장 보고 싶어 하는 건 이 <b style={{color:'var(--ink)'}}>판단의 근거</b>입니다.</div>
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:24,marginTop:22,flex:1}}>
+      <div className="card" style={{padding:'26px 30px'}}>
+        <div style={{fontSize:24,fontWeight:800,color:'var(--ink)'}}>[A] 직접 참조</div>
+        <ul style={{marginTop:16,display:'flex',flexDirection:'column',gap:10,fontSize:18}}>
+          <li style={{color:'var(--ok)'}}>직관적, 흐름 추적이 쉬움</li>
+          <li style={{color:'#C0392B'}}>강한 결합 — 대상 늘면 Manager 수정</li>
+        </ul>
+      </div>
+      <div className="card" style={{padding:'26px 30px',border:'2px solid var(--indigo)',background:'var(--indigo-soft)'}}>
+        <div style={{fontSize:24,fontWeight:800,color:'var(--indigo-deep)'}}>[B] 이벤트 전파 ✓</div>
+        <ul style={{marginTop:16,display:'flex',flexDirection:'column',gap:10,fontSize:18}}>
+          <li style={{color:'var(--ok)'}}>느슨한 결합, 확장 용이</li>
+          <li style={{color:'var(--amber)'}}>흐름 추적 난이도 ↑ (트레이드오프)</li>
+        </ul>
+      </div>
+    </div>
+    <div style={{marginTop:22,background:'var(--indigo)',color:'#fff',borderRadius:12,padding:'16px 24px',fontSize:19}}>
+      <b>결정: B</b> — 결과를 쓸 대상(UI·사운드·통계)이 <b>늘어날 것</b>이므로 확장성을 택함.
+    </div>
+  </div>
+);
+
+// 12 예시: 회고 (문제/개선)
+const ExRetro = () => (
+  <div className="slide" style={{padding:'52px 72px',display:'flex',flexDirection:'column'}}>
+    <ExHead sub="⑤ 결과 · 회고" label="Result / Retrospective"/>
+    <div style={{display:'flex',gap:24,marginTop:26,flex:1}}>
+      <div style={{flex:1,display:'flex',flexDirection:'column',gap:18}}>
+        <div className="card" style={{padding:'22px 26px'}}>
+          <div style={{fontSize:20,fontWeight:800,color:'var(--ok)'}}>✓ 달성</div>
+          <div style={{marginTop:10,fontSize:18,color:'var(--ink)'}}>UI/로직 분리 · 확률 경로 <b>테스트 100%</b> (roll 주입)</div>
+        </div>
+        <div className="card" style={{padding:'22px 26px'}}>
+          <div style={{fontSize:20,fontWeight:800,color:'var(--amber)'}}>△ 아쉬움</div>
+          <div style={{marginTop:10,fontSize:18,color:'var(--ink)'}}>Recipe가 코드에 하드코딩 — 밸런스 조정 시 재빌드 필요</div>
+        </div>
+        <div className="card" style={{padding:'22px 26px'}}>
+          <div style={{fontSize:20,fontWeight:800,color:'var(--indigo)'}}>→ 계획</div>
+          <div style={{marginTop:10,fontSize:18,color:'var(--ink)'}}>Recipe를 <b>ScriptableObject</b> 데이터로 전환</div>
+        </div>
+      </div>
+      <div className="card" style={{flex:1,padding:'28px 30px',background:'var(--indigo-soft)',border:'none',display:'flex',flexDirection:'column',justifyContent:'center'}}>
+        <div style={{fontSize:22,fontWeight:800,color:'var(--indigo-deep)'}}>회고의 핵심</div>
+        <div style={{marginTop:16,fontSize:19,color:'var(--ink)',lineHeight:1.7}}>
+          “잘 됐다”가 아니라 <b>데이터로 증명</b>하고,<br/>
+          남은 <b>기술 부채</b>와 <b>개선 방향</b>까지 쓴다.<br/><br/>
+          한계를 아는 것도 <b>실력의 증거</b>입니다.
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// 14 레이아웃 3원칙 + 8유형
+const Layouts = () => {
+  const types=[['표지','첫인상'],['목차','전체 지도'],['개요','What/Why'],['다이어그램 중심 ★','구조 시각화'],
+    ['코드+설명 2단','구현 증명'],['비교 ★','판단 근거'],['타임라인','순서·흐름'],['회고','정리·전망']];
+  return (
+    <div className="slide" style={{padding:'52px 72px',display:'flex',flexDirection:'column'}}>
+      <Head eyebrow="Part 3 · 레이아웃" rlabel="3원칙 + 8유형"/>
+      <div style={{display:'flex',alignItems:'center',gap:12,marginTop:22,flexWrap:'wrap'}}>
+        {['한 화면 한 메시지','정렬과 여백','위계(Hierarchy)'].map(p=><span key={p} className="pill">{p}</span>)}
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:14,marginTop:24,flex:1}}>
+        {types.map(([t,d])=>{
+          const star=t.includes('★');
+          return (
+            <div key={t} className="card" style={{padding:'18px 18px',...(star?{border:'2px solid var(--indigo)',background:'var(--indigo-soft)'}:{})}}>
+              <div style={{fontSize:19,fontWeight:800,color:star?'var(--indigo-deep)':'var(--ink)'}}>{t}</div>
+              <div style={{marginTop:8,fontSize:15,color:'var(--muted)'}}>{d}</div>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{marginTop:20,fontSize:18,color:'var(--muted)'}}>
+        ★ = 여러분의 <b style={{color:'var(--indigo)'}}>다이어그램이 가장 잘 사는</b> 레이아웃 ·
+        실물 예시는 <span className="chip">React 쇼케이스</span>에서.
+      </div>
+    </div>
+  );
+};
+
+// 20 5종 요약
+const DiagramSummary = () => (
+  <div className="slide" style={{padding:'52px 72px',display:'flex',flexDirection:'column'}}>
+    <Head eyebrow="Part 4 · Mermaid" rlabel="5종, 하나의 시스템"/>
+    <div className="title-xl" style={{marginTop:22}}>무엇을 설명하느냐에 맞춰 <span style={{color:'var(--indigo)'}}>고른다</span></div>
+    <div style={{marginTop:24,flex:1}}>
+      {[['클래스','무엇으로 이루어졌나 (런타임 구조)'],['시퀀스','시간 순서로 어떻게 상호작용하나'],
+        ['상태(FSM)','어떤 상태를 오가나'],['플로우차트','어떤 갈림길을 지나나 (로직)'],
+        ['ER','데이터가 어떻게 저장되나 (저장 구조)']].map(([a,b],i)=>(
+        <div key={a} style={{display:'flex',gap:24,alignItems:'center',padding:'14px 0',borderBottom:'1px solid var(--line)'}}>
+          <div style={{width:150,flex:'0 0 auto'}}><span className="banner" style={{fontSize:16}}>{a}</span></div>
+          <div style={{fontSize:19,color:'var(--ink)'}}>{b}</div>
+        </div>
+      ))}
+    </div>
+    <div style={{marginTop:16,background:'var(--indigo-soft)',borderRadius:12,padding:'14px 22px',fontSize:18,color:'var(--indigo-deep)'}}>
+      다 넣지 말고, <b>설명하려는 것</b>에 맞는 1~2개만 고르세요.
+    </div>
+  </div>
+);
+
+// 22 AI 워크플로우
+const AIWorkflow = () => (
+  <div className="slide" style={{padding:'52px 72px',display:'flex',flexDirection:'column'}}>
+    <Head eyebrow="Part 5 · AI 워크플로우" rlabel="AI는 '초안 생성기'다"/>
+    <div className="title-xl" style={{marginTop:22}}>AI로 <span style={{color:'var(--indigo)'}}>속도</span>, 이해로 <span style={{color:'var(--indigo)'}}>실력</span></div>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:12,marginTop:28,flex:1}}>
+      {[['기능 설명','내가 만든 걸 AI에게'],['다이어그램 생성','Mermaid 코드'],['문서 초안','5단 구조 틀'],
+        ['다듬기 ★','내 언어·경험·‘왜’'],['이미지 변환','mermaid.live 클릭']].map(([a,b],i)=>{
+        const star=a.includes('★');
+        return (
+          <div key={i} className="card" style={{padding:'20px 16px',position:'relative',...(star?{border:'2px solid var(--indigo)',background:'var(--indigo-soft)'}:{})}}>
+            <div style={{width:36,height:36,borderRadius:'50%',background:star?'var(--indigo)':'var(--indigo-mid)',color:'#fff',
+                         display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800}}>{i+1}</div>
+            <div style={{marginTop:12,fontSize:18,fontWeight:800,color:'var(--ink)'}}>{a}</div>
+            <div style={{marginTop:6,fontSize:14,color:'var(--muted)'}}>{b}</div>
+          </div>
+        );
+      })}
+    </div>
+    <div style={{marginTop:22,background:'var(--indigo)',color:'#fff',borderRadius:12,padding:'16px 24px',fontSize:19}}>
+      ★ <b>4번이 실력 구간.</b> 1·5는 AI·도구가 돕지만, 4는 오직 여러분만 할 수 있습니다.
+    </div>
+  </div>
+);
+
+// 23 주의 (다크)
+const Caution = () => (
+  <div className="slide" style={{background:'var(--code-bg)',padding:'60px 84px',display:'flex',flexDirection:'column',justifyContent:'center'}}>
+    <span className="eyebrow" style={{color:'var(--indigo-mid)'}}>Part 5 · 주의</span>
+    <div style={{fontSize:52,fontWeight:800,color:'#fff',marginTop:14,letterSpacing:'-.02em'}}>이해 없이 <span style={{color:'#C4A0FF'}}>복붙 금지</span></div>
+    <ul style={{marginTop:34,display:'flex',flexDirection:'column',gap:18,fontSize:23,color:'var(--code-fg)'}}>
+      <li>문서에 넣는 <b style={{color:'#fff'}}>모든 것을 내가 설명</b>할 수 있어야 한다</li>
+      <li>AI는 그럴듯하게 <b style={{color:'#fff'}}>틀린다</b> → 코드는 실행, 다이어그램은 대조로 검증</li>
+      <li><b style={{color:'#fff'}}>‘고민과 선택’</b>은 AI가 대신 못 한다 (내 실제 의사결정)</li>
+    </ul>
+    <div style={{marginTop:36,fontSize:24,fontWeight:800,color:'#7FE0C0'}}>AI로 속도를 얻되, 이해로 실력을 증명하라.</div>
+  </div>
+);
+
+// 25 프롬프트
+const Prompts = () => (
+  <div className="slide" style={{padding:'52px 72px',display:'flex',flexDirection:'column'}}>
+    <Head eyebrow="Part 6 · 프롬프트" rlabel="4요소 + 두 트랙"/>
+    <div className="title-xl" style={{marginTop:22}}>좋은 프롬프트 = <span style={{color:'var(--indigo)'}}>역할 + 맥락 + 제약 + 출력형식</span></div>
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:22,marginTop:30,flex:1}}>
+      {[['트랙 A — Marp','발표·PDF용 슬라이드','마크다운 · 가볍고 빠름'],
+        ['트랙 B — React','포트폴리오 웹페이지','단일 HTML · 깔끔']].map(([t,a,b])=>(
+        <div key={t} className="card" style={{padding:'28px 32px'}}>
+          <div className="banner">{t}</div>
+          <div style={{marginTop:18,fontSize:22,fontWeight:700,color:'var(--ink)'}}>{a}</div>
+          <div style={{marginTop:10,fontSize:18,color:'var(--muted)'}}>{b}</div>
+        </div>
+      ))}
+    </div>
+    <div style={{marginTop:22,background:'var(--indigo-soft)',borderRadius:12,padding:'16px 24px',fontSize:18,color:'var(--indigo-deep)'}}>
+      <b>만능 틀 4개</b>(다이어그램·Marp·React·다듬기)로 대부분 대응 — 특히 <b>다듬기 틀</b>로 반복 개선.
+    </div>
+  </div>
+);
+
+// 26 마무리
+const Closing = () => (
+  <div className="slide" style={{padding:'70px 84px',display:'flex',flexDirection:'column'}}>
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',borderBottom:'1px solid var(--line)',paddingBottom:16}}>
+      <span className="eyebrow">Summary</span><span style={{color:'var(--faint)',fontWeight:700}}>정리</span>
+    </div>
+    <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'center'}}>
+      <div style={{fontSize:56,fontWeight:800,lineHeight:1.18,letterSpacing:'-.02em',color:'var(--ink)'}}>
+        도구와 AI는 <span style={{color:'var(--indigo)'}}>속도</span>를 줄 뿐,<br/>
+        이해하고 판단한 것만이 <span style={{color:'var(--indigo)'}}>실력</span>으로 남습니다.
+      </div>
+      <DotRule style={{margin:'34px 0'}}/>
+      <div style={{fontSize:24,color:'var(--muted)',fontWeight:600}}>
+        잘 읽히는 문서로, <b style={{color:'var(--ink)'}}>함께 일하고 싶은 개발자</b>임을 증명하세요.
+      </div>
+    </div>
+    <div style={{fontSize:16,color:'var(--faint)',fontWeight:600}}>김재훈 (Jay / KooHoo) · Unity Developer Career &amp; Tech-Doc Guide v2</div>
+  </div>
+);
+
+/* ── Part 2 개념 상세 슬라이드 (KooHoo 원본 소스 기반) ── */
+const OverviewConcept = () => (
+  <ConceptSlide
+    eyebrow="Part 2 · 기술 문서 상세" rlabel="① 개요"
+    title="① 개요: 무엇을, 왜" pill="지도와 나침반"
+    concept={<>
+      <div className="lead">문서를 읽는 사람은 배경지식이 없습니다. 개요는 그 <b>정보 비대칭</b>을 해소하고 독자를 <b>'같은 출발선'</b>에 세웁니다. 결론부터 제시해 <b>10초 안에</b> 핵심이 잡혀야 합니다.</div>
+      <div className="kv"><div className="k">What · 지도</div><div className="v">지금부터 탐험할 <b>범위</b>를 보여줍니다. "이 문서는 게임 전체가 아니라 상태이상 시스템만 다룹니다."</div></div>
+      <div className="kv"><div className="k">Why · 나침반</div><div className="v">왜 이 지도를 펴는지 <b>문제와 가치</b>를 가리킵니다. "화염·냉기마다 코드가 중복돼 수정이 어려웠다."</div></div>
+    </>}
+    metaphor={{title:'개요 = 퀘스트 로그', body:<>지금 <b>어디서 무엇을 왜</b> 하는지 한눈에 알려주는 것. 독자가 흥미를 느끼면 Best.</>}}
+    bad={['"인벤토리 시스템을 만들었습니다. List로 추가·삭제·사용을 구현했습니다."','→ <b>왜</b> 만들었나? List를 <b>왜</b>? 필요성·중요도를 전혀 알 수 없음']}
+    good={['<b>What</b> — 오브젝트 풀링(Object Pooling) 도입','<b>Why</b> — Instantiate/Destroy의 GC 과부하','<b>증거</b> — 보스전 초당 100발, Galaxy S10에서 10~15fps 드랍','<b>범위</b> — PoolManager 설계·핵심 코드·성능 비교']}
+    tip={<>개요는 <b>맨 마지막에 다시 쓰세요</b> — 다 쓰고 나면 하려던 말이 명확해집니다. · "느리다" 대신 <b>"로딩 15초"</b>처럼 측정 가능한 문제로. · 스스로 <b>"So What?"</b>을 반복해 표면적 What에서 근본 Why로.</>}
+  />
+);
+const StructureConcept = () => (
+  <ConceptSlide
+    eyebrow="Part 2 · 기술 문서 상세" rlabel="② 시스템 구조"
+    title="② 시스템 구조: 어떻게 조립됐나" pill="관심사의 분리"
+    concept={<>
+      <div className="lead"><b>코드를 한 줄도 안 보여주고도</b> 독자가 전체 동작을 이해하게 만드는 섹션. Tech Stack 나열이 아니라, 부품이 어떻게 조립됐는지 보이는 <b>설계도</b>입니다.</div>
+      <div className="kv"><div className="k">구성요소</div><div className="v">시스템을 이루는 모듈·클래스 (UIManager, Controller, Data…)</div></div>
+      <div className="kv"><div className="k">관계</div><div className="v">누가 누구를 <b>알고·제어·데이터만 받는지</b> 책임을 정의</div></div>
+      <div className="kv"><div className="k">흐름</div><div className="v">입력(Input)이 어떤 순서로 결과(Output)가 되는지</div></div>
+    </>}
+    metaphor={{title:'레스토랑 주방', body:<>손님(User)→<b>웨이터</b>(UI, 요리는 못 함)→<b>주방장</b>(Manager, 지시·조율만)→요리사(Logic)→냉장고(Data). "웨이터는 주방장에게만" 접근하는 <b>업무 분장표</b>가 곧 구조.</>}}
+    bad={['<b>갓 클래스</b> — Player.cs 하나에 입력·UI·데이터·저장을 전부','→ 푸드트럭: 사장 혼자 주문·요리·서빙·계산. UI만 바꿔도 저장 로직까지 얽혀 버그']}
+    good={['<b>관심사 3분리</b> — View(UI)·Model(데이터)·Controller(관리)','UI는 "3번 슬롯 클릭됨"만 <b>알림</b> · Manager가 중재','Model엔 Update()도 UI 코드도 없음 (보관만)','→ UI를 통째로 바꿔도 <b>UI 클래스만</b> 수정']}
+    tip={<>"MVC 썼습니다"가 아니라 <b>왜 나눴는지</b>를 설명하세요 (예: UI 변경이 잦을 것 같아서). · 코드보다 <b>박스와 화살표</b>가 100줄보다 낫습니다. · Tech Stack은 도구일 뿐 — 구조는 그 도구로 세운 골조입니다.</>}
+  />
+);
+const FeatureConcept = () => (
+  <ConceptSlide
+    eyebrow="Part 2 · 기술 문서 상세" rlabel="③ 핵심 기능·사용법"
+    title="③ 핵심 기능: 어떻게 동작·사용하나" pill="증거와 사용법"
+    concept={<>
+      <div className="lead">구조가 '설계도'였다면 여기는 <b>시공 매뉴얼 + 사용법</b>. 독자가 이 섹션만 읽고도 기능을 즉시 쓰거나 테스트할 수 있어야 합니다.</div>
+      <div className="kv"><div className="k">핵심 동작</div><div className="v">1000줄 다 보여주면 최악. "아하!"가 오는 <b>핵심 50줄</b>만 선별</div></div>
+      <div className="kv"><div className="k">사용법(API)</div><div className="v">어떤 함수를 호출하고, 무엇을 입력하면 무엇이 나오는지</div></div>
+    </>}
+    metaphor={{title:'에어프라이어 설명서', body:<>50페이지 <b>회로도 전체</b>(코드 500줄)도, "전원 누르면 됨"(설명 부족)도 아님. <b>빠른 사용법 + 핵심 동작 원리</b>가 좋은 설명서.</>}}
+    bad={['<b>코드만 500줄 나열</b> — "InventoryManager.cs는 다음과 같습니다…"','→ 어디가 중요한지·왜 이렇게 짰는지·어떻게 쓰는지 <b>정보 0</b>. 해석 부담을 독자에게 전가']}
+    good={['<b>사용법</b> — InventoryManager.Instance.UseItem(slot)','<b>핵심 로직</b> — 아이템 타입 switch → 타입별 실행','<b>(Why)</b> if 아닌 switch: 새 타입 추가에도 확장 쉬움','<b>예외</b> — item==null 방어 코드까지 설명']}
+    tip={<>목적은 "코드를 짤 줄 안다"가 아니라 <b>"내 코드를 설명할 줄 안다"</b> = 개발 커뮤니케이션이 된다 = 함께 일할 수 있다. · 성공 케이스뿐 아니라 <b>예외·방어 코드</b>를 보여주면 전문가 인상.</>}
+  />
+);
+const TradeoffConcept = () => (
+  <ConceptSlide
+    eyebrow="Part 2 · 기술 문서 상세" rlabel="④ 고민과 선택"
+    title="④ 고민과 선택: 왜 이 방법인가" pill="정답이 아닌 최선"
+    concept={<>
+      <div className="lead">"왜 다른 방법이 아닌 <b>이 방법</b>인가"에 대한 논리적 변론. 정답 맞히기가 아니라 <b>얼마나 깊이 고민했는지</b>를 증명합니다. Coder와 Developer를 가르는 지점.</div>
+      <div className="kv"><div className="k">Trade-off</div><div className="v">만능 기술은 없습니다. 쉬우면 느리고, 빠르면 어렵습니다.</div></div>
+      <div className="kv"><div className="k">의사결정</div><div className="v">내 상황에서 "왜 A의 장점을 취하고 <b>B의 단점을 감수</b>했는지" 기록</div></div>
+    </>}
+    metaphor={{title:'전사의 무기 선택', body:<>민첩 캐릭 + 빠른 보스. 양손도끼(+한방/−느림) vs 쌍검(+속도/−약함) → <b>상황상 쌍검</b>. 양손도끼가 나쁜 게 아니라 <b>이 상황에 안 맞을</b> 뿐.</>}}
+    bad={['"<b>그냥</b> PlayerPrefs 썼어요"','→ 왜? 유일한 방법이었나? 다른 건 안 알아봤나? = <b>고민을 안 했다는 고백</b>']}
+    good={['[A] PlayerPrefs — 간편·빠름 / 복잡 데이터·<b>치팅 취약</b>','[B] JSON — 객체 통째 저장 / 구현 복잡','<b>결정: PlayerPrefs</b> — 저장할 게 "최고 점수" 하나뿐','→ "JSON의 유연성은 과설계, 개발 속도를 택함" 근거']}
+    tip={<><b>"그냥"은 금지어.</b> 모든 선택엔 이유가 있어야 합니다. · 신입에게 기대하는 건 기술력이 아니라 <b>사고 과정</b> — 면접관이 가장 보고 싶어 하는 부분. · <b>틀려도 됩니다</b> — "A와 B를 비교해 판단했다"는 태도가 핵심.</>}
+  />
+);
+const RetroConcept = () => (
+  <ConceptSlide
+    eyebrow="Part 2 · 기술 문서 상세" rlabel="⑤ 결과·배운 점"
+    title="⑤ 결과·배운 점: 무엇을 배웠나" pill="사실 기록·경험 자산화"
+    concept={<>
+      <div className="lead">"다 만들었다"는 선언이 아닙니다. 개요에서 세운 목표(Why)가 <b>달성됐는지 데이터로</b> 보이고, <b>배운 점</b>을 다음 사람이 쓸 수 있게 남깁니다.</div>
+      <div className="kv"><div className="k">결과</div><div className="v">목표 달성 여부를 <b>구체적 데이터(증거)</b>로 ("15초→3초")</div></div>
+      <div className="kv"><div className="k">배운 점</div><div className="v">문제 해결(Troubleshooting) · 아쉬운 점(<b>기술 부채</b>) · 개선 계획</div></div>
+    </>}
+    metaphor={{title:'원정대 보고서', body:<>"황금 유적 발견(결과)" + "독사에 물림 — 해독제인 줄 알았는데 소화제(교훈)" + "임시 밧줄(<b>기술 부채</b>) → 다음엔 튼튼한 다리(개선)". 보고서가 없으면 <b>다음 원정대도 같은 재앙</b>.</>}}
+    bad={['"오브젝트 풀링 적용해서 렉이 안 걸립니다."','→ "렉 안 걸림"은 주관적. 어떤 문제였고 뭘 배웠는지 <b>0</b>. 다음 사람에게 도움 0']}
+    good={['<b>결과(데이터)</b> — 보스전 60→15fps, 적용 후 58~60fps (프로파일러)','<b>Troubleshooting</b> — 반납 총알 오작동 → Velocity 미초기화가 원인','<b>기술 부채</b> — PoolManager가 특정 프리팹에 강결합','<b>개선</b> — 제네릭 PoolManager&lt;T&gt;로 리팩토링 계획']}
+    tip={<>"빨라졌다"가 아니라 <b>"15초가 3초가 됐다"</b> — 감상이 아닌 측정. · <b>"아쉬운 점 없습니다"는 0점.</b> 기술 부채를 인지하고 개선을 제시하는 사람이 성장 가능성을 인정받습니다.</>}
+  />
+);
+
+/* ── Part 3 개념·테마 ── */
+const LayoutPrinciples = () => (
+  <ConceptSlide
+    eyebrow="Part 3 · 레이아웃" rlabel="왜 레이아웃인가"
+    title="레이아웃이 전달을 좌우한다" pill="한 화면 한 메시지"
+    concept={<>
+      <div className="lead">사람은 슬라이드를 <b>읽지 않고 먼저 봅니다.</b> 시선은 보통 왼쪽 위 → 오른쪽 아래(<b>Z자</b>)로 흐릅니다. 좋은 레이아웃은 <b>가장 중요한 것</b>을 시선이 처음 닿는 곳에 둡니다.</div>
+      <div className="kv"><div className="k">한 메시지</div><div className="v">슬라이드 하나에 주제 하나. 두 개면 두 장으로</div></div>
+      <div className="kv"><div className="k">정렬·여백</div><div className="v">격자에 맞춰 정렬하고 여백을 두려워 말 것</div></div>
+      <div className="kv"><div className="k">위계</div><div className="v">제목 &gt; 소제목 &gt; 본문 &gt; 캡션 — 크기·굵기·색으로</div></div>
+    </>}
+    metaphor={{title:'도로 표지판', body:<>운전 중 <b>0.5초</b>에 읽혀야 하는 표지판처럼, 슬라이드도 <b>한눈에</b> 핵심이 잡혀야 합니다. 글이 많으면 아무도 안 봅니다.</>}}
+    bad={['한 슬라이드에 <b>주제 2~3개</b>를 우겨넣음','요소가 격자 없이 제각각 정렬','제목·본문·캡션 크기가 비슷 → <b>위계 없음</b>','빽빽함 → "정리 안 됨"으로 읽힘']}
+    good={['<b>한 화면 한 메시지</b> — 넘치면 장을 나눔','격자 정렬 + 충분한 <b>여백</b>','제목>본문>캡션 <b>위계</b>를 크기·색으로','시선 첫 지점(좌상)에 결론']}
+    tip={<><b>일관성</b>이 핵심 — 폰트 2종(본문·코드), 색 3색(배경·텍스트·강조) 안에서 전체를 통일하세요. 장마다 스타일이 바뀌면 그 자체로 "정리 안 됨"으로 읽힙니다.</>}
+  />
+);
+const ThemeSwatch = ({name, use, bg, bar, text, accent, code}) => (
+  <div className="card" style={{padding:14,display:'flex',flexDirection:'column',gap:10}}>
+    <div style={{aspectRatio:'16/9',borderRadius:8,background:bg,border:'1px solid var(--line)',padding:12,display:'flex',flexDirection:'column',gap:6,overflow:'hidden'}}>
+      <div style={{width:'55%',height:9,borderRadius:3,background:accent}}/>
+      <div style={{width:'85%',height:6,borderRadius:3,background:text,opacity:.7}}/>
+      <div style={{width:'70%',height:6,borderRadius:3,background:text,opacity:.45}}/>
+      {code && <div style={{marginTop:'auto',height:16,borderRadius:4,background:'rgba(127,224,192,.18)',border:'1px solid rgba(127,224,192,.4)'}}/>}
+    </div>
+    <div><div style={{fontSize:16,fontWeight:800,color:'var(--ink)'}}>{name}</div>
+      <div style={{fontSize:13.5,color:'var(--muted)',marginTop:2}}>{use}</div></div>
+  </div>
+);
+const ThemeGuide = () => (
+  <div className="slide" style={{padding:'40px 56px',display:'flex',flexDirection:'column'}}>
+    <Head eyebrow="Part 3 · 레이아웃" rlabel="스타일·테마"/>
+    <div className="title-lg" style={{fontSize:30,marginTop:12}}>테마는 <span style={{color:'var(--indigo)'}}>3색·2폰트</span> 안에서</div>
+    <div className="concept lead" style={{marginTop:10}}>테마는 취향이 아니라 <b>목적</b>에 맞춰 고릅니다. 아래 3가지 안에서 하나를 정하고, 문서 전체를 통일하세요.</div>
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:16,marginTop:16}}>
+      <ThemeSwatch name="미니멀 (권장)" use="대부분의 기술 문서" bg="#ffffff" text="#1f2328" accent="#5B6AD0"/>
+      <ThemeSwatch name="다크 코드" use="코드 스니펫이 많은 문서" bg="#1E2138" text="#E6E8F5" accent="#8B95E4" code/>
+      <ThemeSwatch name="브랜드" use="포트폴리오·게임 (본문은 미니멀)" bg="linear-gradient(135deg,#EEF0FB,#DDE3FA)" text="#3E4CAB" accent="#5B6AD0"/>
+    </div>
+    <div style={{marginTop:16,flex:1,minHeight:0}}>
+      <MiniTable head={['상황','권장 테마']}
+        rows={[['기업 제출용 PDF','미니멀 / 문서형 (밝은 배경)'],['개발자 대상 발표','다크 코드 테마'],['포트폴리오 첫인상','브랜드 (본문은 미니멀 유지)']]}/>
+    </div>
+    <Note label="팁">폰트는 <b>본문·코드 2종</b>이면 충분합니다(예: Pretendard·JetBrains Mono). 색은 <b>배경·텍스트·강조 3색</b>으로 제한 — 색이 늘수록 산만해집니다.</Note>
+  </div>
+);
+
+/* ── Part 4 결정·치트시트 ── */
+const WhichDiagram = () => (
+  <div className="slide" style={{padding:'40px 56px',display:'flex',flexDirection:'column'}}>
+    <Head eyebrow="Part 4 · Mermaid" rlabel="어떤 다이어그램을 고를까"/>
+    <div style={{display:'flex',alignItems:'center',gap:14,marginTop:12}}>
+      <div className="title-lg" style={{fontSize:30}}>질문이 다이어그램을 <span style={{color:'var(--indigo)'}}>고른다</span></div>
+      <span className="pill">질문 → 유형</span>
+    </div>
+    <div className="concept lead" style={{marginTop:12}}>같은 시스템도 <b>5가지 각도</b>로 볼 수 있습니다. 다 그리지 말고, <b>내가 설명하려는 질문</b>에 맞는 1~2개를 고르세요.</div>
+    <div style={{marginTop:16,flex:1,display:'flex',flexDirection:'column',justifyContent:'center',gap:12}}>
+      {[['"무엇으로 이루어졌나?" — 런타임 구조','클래스'],
+        ['"시간 순서로 어떻게 상호작용하나?"','시퀀스'],
+        ['"어떤 상태를 오가나?"','상태(FSM)'],
+        ['"어떤 갈림길을 지나나?" — 로직','플로우차트'],
+        ['"데이터가 어떻게 저장되나?" — 저장 구조','ER']].map(([q,t])=>(
+        <div key={t} style={{display:'flex',alignItems:'center',gap:16}}>
+          <div style={{flex:1,background:'#F7F8FD',border:'1px solid var(--line)',borderRadius:10,padding:'12px 18px',fontSize:17,color:'var(--ink)',fontWeight:600}}>{q}</div>
+          <span className="arrow">→</span>
+          <div style={{width:150,flex:'0 0 auto'}}><span className="banner" style={{fontSize:16}}>{t}</span></div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+const MermaidCheatsheet = () => (
+  <div className="slide" style={{padding:'40px 56px',display:'flex',flexDirection:'column'}}>
+    <Head eyebrow="Part 4 · Mermaid" rlabel="기호 치트시트"/>
+    <div className="title-lg" style={{fontSize:30,marginTop:12}}>핵심 기호 <span style={{color:'var(--indigo)'}}>한 장</span></div>
+    <div className="refcard" style={{gridTemplateColumns:'1fr 1fr',marginTop:18,flex:1,alignContent:'center'}}>
+      {[['클래스',[['<|..','구현(interface)'],['-->','사용·소유'],['..>','의존(DIP)'],['+ / -','public / private']]],
+        ['시퀀스',[['->>','동기 호출'],['-->>','응답·이벤트'],['Note over','주석']]],
+        ['상태(FSM)',[['[*]','시작 / 끝'],['-->','전이'],[': 조건','트리거·조건']]],
+        ['플로우차트',[['([ ])','시작·끝(둥근)'],['{ }','판단(마름모)'],['[ ]','처리(사각)'],['-->|Yes|','분기 라벨']]],
+        ['ER',[['PK / FK','기본키 / 외래키'],['||--o{','1 : 0..N'],['||--|{','1 : 1..N']]]].map(([t,rows])=>(
+        <div key={t} className="rc">
+          <div className="rch">{t}</div>
+          <div style={{marginTop:8,display:'flex',flexDirection:'column',gap:5}}>
+            {rows.map(([sym,mean],i)=>(
+              <div key={i} style={{display:'flex',gap:12,alignItems:'baseline'}}>
+                <code className="mono" style={{background:'var(--code-bg)',color:'#7FE0C0',padding:'2px 8px',borderRadius:5,fontSize:13,minWidth:78,textAlign:'center',flex:'0 0 auto'}}>{sym}</code>
+                <span style={{fontSize:14,color:'var(--muted)'}}>{mean}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+    <Note label="렌더">GitHub는 ```mermaid 코드 블록을 <b>네이티브 렌더링</b>합니다. 발표·PDF용 이미지는 <b>mermaid.live</b>에 붙여 PNG/SVG로 내보내면 됩니다.</Note>
+  </div>
+);
+
+/* ── Part 5 AI 개념·프롬프트·레드플래그 ── */
+const AIConcept = () => (
+  <ConceptSlide
+    eyebrow="Part 5 · AI 워크플로우" rlabel="AI를 어떻게 쓰나"
+    title="AI는 '초안 생성기'다" pill="이해한 것을 빠르게"
+    concept={<>
+      <div className="lead">AI는 문서를 <b>대신 써주는 게 아닙니다.</b> 여러분이 아는 것을 <b>정리하는 속도</b>를 높여줍니다. 이미 이해한 것을 정리할 때 가장 강력합니다.</div>
+      <div className="kv"><div className="k">할 수 있음</div><div className="v">초안·다이어그램 코드·문장 다듬기의 <b>속도</b></div></div>
+      <div className="kv"><div className="k">못 하는 것</div><div className="v"><b>"왜(Why)"</b> — 내 실제 의사결정은 AI가 채울 수 없음</div></div>
+    </>}
+    metaphor={{title:'조수(어시스턴트)', body:<>요리사는 <b>나</b>, AI는 재료를 빠르게 손질하는 보조. 맛(판단)을 내는 건 여전히 나입니다.</>}}
+    bad={['AI가 쓴 <b>매끄러운 일반론</b>을 그대로 붙여넣기','존재하지 않는 API·메서드를 검증 없이 삽입','"고민과 선택"을 AI에게 <b>대신</b> 시킴']}
+    good={['AI 초안을 <b>내 언어·경험</b>으로 교체','코드는 실행, 다이어그램은 코드와 <b>대조 검증</b>','"왜"는 내 실제 의사결정으로 직접 서술']}
+    tip={<>면접관은 문서가 아니라 <b>여러분</b>을 뽑습니다. AI의 매끄러운 일반론은 질문 한 번에 무너지고, 서툴러도 <b>내가 이해한 것</b>은 어떤 질문에도 답할 수 있습니다.</>}
+  />
+);
+const PromptSteps = () => {
+  const steps=[
+    {t:'① 기능 설명 (내 입력)', b:`유니티 C#으로 만든 크래프팅 시스템을 설명할게. 재료를 소비해 아이템을 제작하고, 레시피마다 성공 확률이 있어. 실패하면 재료를 절반만 소비해. 클래스는 Manager·Inventory·Recipe·UI가 있고, 결과는 이벤트로 UI에 전달돼.`, g:'AI가 내 설명을 구조화해 이해'},
+    {t:'② 다이어그램 요청', b:`방금 설명한 클래스 관계를 Mermaid 클래스 다이어그램으로 그려줘. Manager는 ICraftingService를 구현하고, UI는 구현체가 아니라 인터페이스에 의존하게 해줘(DIP).`, g:'Mermaid 클래스 다이어그램 코드'},
+    {t:'③ 문서 초안 요청', b:`이 크래프팅 시스템의 기술 문서를 '개요 → 시스템 구조 → 핵심 기능 → 고민과 선택 → 결과' 순서로 써줘. 각 항목에 뭘 채워야 할지 틀을 잡아줘.`, g:'5단 구조 문서 뼈대'},
+  ];
+  return (
+    <div className="slide" style={{padding:'40px 56px',display:'flex',flexDirection:'column'}}>
+      <Head eyebrow="Part 5 · AI 워크플로우" rlabel="실제 프롬프트 3단계"/>
+      <div className="title-lg" style={{fontSize:30,marginTop:12}}>설명 → 다이어그램 → <span style={{color:'var(--indigo)'}}>초안</span></div>
+      <div className="concept lead" style={{marginTop:10}}>내가 만든 걸 <b>글로 설명</b>하면, AI가 다이어그램 코드·문서 초안을 빠르게 만들어 줍니다. 아래 3개를 순서대로 던지세요.</div>
+      <div style={{flex:1,display:'flex',alignItems:'center'}}>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:16,width:'100%',alignItems:'start'}}>
+          {steps.map((s,i)=>(
+            <div key={i} style={{display:'flex',flexDirection:'column',gap:8}}>
+              <PromptCard title={s.t} body={s.b}/>
+              <div style={{display:'flex',gap:8,alignItems:'baseline',fontSize:14,color:'var(--muted)'}}><span className="arrow" style={{fontSize:18}}>→</span><span>얻는 것: <b style={{color:'var(--indigo-deep)'}}>{s.g}</b></span></div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <Note label="다음">③까지는 AI가 <b>틀</b>을 잡아줍니다. 진짜 실력 구간은 <b>④ 다듬기</b> — 내 언어·경험·"왜"로 교체하는 단계입니다.</Note>
+    </div>
+  );
+};
+const AIRedFlags = () => (
+  <div className="slide" style={{padding:'40px 56px',display:'flex',flexDirection:'column'}}>
+    <Head eyebrow="Part 5 · AI 워크플로우" rlabel="④ 다듬기가 실력"/>
+    <div className="title-lg" style={{fontSize:30,marginTop:12}}>AI가 준 초안, <span style={{color:'var(--indigo)'}}>이것부터</span></div>
+    <div className="concept lead" style={{marginTop:10}}>AI 초안의 <b>매끄러움</b>에 속지 마세요. 그대로 내면 면접 질문 한 번에 무너집니다. <b>내 언어·경험·"왜"</b>로 교체하는 이 단계가 실력 구간입니다.</div>
+    <div style={{flex:1,display:'flex',flexDirection:'column',justifyContent:'center',marginTop:12}}>
+      <GoodBad badTitle="👎 AI 초안 그대로" goodTitle="👍 내가 다듬은 뒤"
+        bad={['"성능을 위해 오브젝트를 최적화하여 관리했습니다."','→ 무엇을·어떻게·왜가 없는 <b>매끄러운 일반론</b>. 질문 한 번에 무너짐']}
+        good={['"실패 시 재료가 100% 사라지던 버그를 <b>success ? 1.0f : 0.5f</b> 분기로 해결했습니다."','→ 구체적 <b>문제·해결·근거</b>가 담겨 어떤 질문에도 답 가능']}/>
+    </div>
+    <div style={{background:'#FAFBFF',border:'1px solid var(--line)',borderLeft:'4px solid var(--indigo-mid)',borderRadius:'0 12px 12px 0',padding:'14px 18px'}}>
+      <div className="nlabel" style={{fontSize:12,fontWeight:800,letterSpacing:'.1em',color:'var(--indigo)'}}>레드 플래그 — 넣기 전 확인</div>
+      <div style={{marginTop:10,display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px 24px'}}>
+        {['존재하지 않는 <b>API·메서드</b>를 지어내지 않았는가','<b>내 실제 코드</b>와 어긋나지 않는가','근거 없는 <b>일반론</b>이 아닌가','<b>비공개 회사·팀 코드</b>를 넣지 않았는가'].map((x,i)=>(
+          <div key={i} className="ci" style={{display:'flex',gap:10,fontSize:15.5,color:'var(--ink)'}}>
+            <span className="cb" style={{flex:'0 0 auto',width:20,height:20,borderRadius:5,background:'var(--indigo-soft)',color:'var(--indigo-deep)',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,fontSize:13}}>✓</span>
+            <span dangerouslySetInnerHTML={{__html:x}}/>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+/* ── Part 6 프롬프트 개념·갤러리·틀 ── */
+const PromptConcept = () => (
+  <ConceptSlide
+    eyebrow="Part 6 · 프롬프트" rlabel="좋은 프롬프트의 4요소"
+    title="역할 + 맥락 + 제약 + 형식" pill="4요소"
+    concept={<>
+      <div className="lead">좋은 프롬프트엔 4가지가 들어갑니다. 이 넷을 채우면 결과가 <b>의도에 훨씬 가깝게</b> 나옵니다.</div>
+      <div className="kv"><div className="k">역할</div><div className="v">AI에게 어떤 전문가처럼 굴지 ("너는 기술 문서 디자이너야")</div></div>
+      <div className="kv"><div className="k">맥락</div><div className="v">무엇을, 누구를 위해 만드는지</div></div>
+      <div className="kv"><div className="k">제약</div><div className="v">지켜야 할 조건 (미니멀·3색·50줄 이하)</div></div>
+      <div className="kv"><div className="k">형식</div><div className="v">어떤 형태로 답할지 (코드블록으로만)</div></div>
+    </>}
+    metaphor={{title:'외주 발주서', body:<>두루뭉술하면 엉뚱한 결과가, <b>구체적</b>이면 의도대로 옵니다. 프롬프트는 AI에게 주는 발주서입니다.</>}}
+    bad={['"크래프팅 슬라이드 만들어줘"','→ 역할·맥락·형식을 몰라 <b>제멋대로</b> 만듦']}
+    good={['<b>역할</b> — 너는 기술 문서 디자이너야','<b>맥락</b> — 크래프팅 시스템 발표 표지','<b>제약</b> — 미니멀·중앙정렬·프로젝트명 크게','<b>형식</b> — Marp 코드블록으로만 답해줘']}
+    tip={<>첫 결과가 완벽할 필요 없습니다. <b>"여기는 이렇게 바꿔줘"</b>로 다듬는 게 정상 흐름 — 이 반복이 곧 실무입니다.</>}
+  />
+);
+const PromptGallery = () => (
+  <div className="slide" style={{padding:'40px 56px',display:'flex',flexDirection:'column'}}>
+    <Head eyebrow="Part 6 · 프롬프트" rlabel="복붙용 프롬프트 갤러리"/>
+    <div className="title-lg" style={{fontSize:30,marginTop:12}}>세 트랙, <span style={{color:'var(--indigo)'}}>바로 쓰는</span> 프롬프트</div>
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:16,marginTop:18,flex:1}}>
+      <PromptCard title="A · Marp 슬라이드" body={`너는 기술 문서 디자이너야. Marp로 "[시스템 구조]" 슬라이드 1장을 만들어줘. 화면 대부분을 다이어그램 이미지가 차지하고, 아래에 핵심 캡션 한 줄만. 코드 블록으로만 답해줘.`}/>
+      <PromptCard title="B · React 포트폴리오" body={`단일 HTML(React CDN + Tailwind CDN)로 프로젝트 상세 페이지를 만들어줘. 개요/구조/기능/회고 섹션. 깔끔·절제, 3색 이내, 반응형. 하나의 .html로만 답해줘.`}/>
+      <PromptCard title="C · Mermaid 다이어그램" body={`다음 관계를 Mermaid classDiagram으로 그려줘. Manager는 ICraftingService를 구현, UI는 인터페이스에 의존(..>). 필드·메서드도 넣고, 코드 블록으로만 답해줘.`}/>
+    </div>
+    <Note label="팁">대괄호 <b>[ ]</b> 안만 내 프로젝트로 바꿔 끼우면 됩니다. 자세한 프롬프트 모음은 <span className="chip">src/06-prompts.md</span>.</Note>
+  </div>
+);
+const UniversalTemplates = () => (
+  <div className="slide" style={{padding:'40px 56px',display:'flex',flexDirection:'column'}}>
+    <Head eyebrow="Part 6 · 프롬프트" rlabel="만능 틀 + 품질 점검"/>
+    <div className="title-lg" style={{fontSize:30,marginTop:12}}>틀 <span style={{color:'var(--indigo)'}}>4개</span>로 대부분 대응</div>
+    <div style={{display:'flex',gap:24,marginTop:18,flex:1}}>
+      <div style={{flex:1.35}}>
+        <MiniTable head={['만능 틀','용도']}
+          rows={[['① 다이어그램','"다음 [무엇]을 Mermaid [종류]로. [구성요소] [강조]"'],
+                 ['② Marp','"Marp로 슬라이드 [N]장. 제목 [X] 내용 [Y] 레이아웃 [Z]"'],
+                 ['③ React','"단일 HTML 포트폴리오. 섹션 [나열]. 3색·반응형"'],
+                 ['④ 다듬기','"방금 [A]에서 [B]를 [C]로 바꿔줘. 나머지는 그대로"']]}/>
+      </div>
+      <div style={{flex:1}}>
+        <div className="banner" style={{fontSize:15,marginBottom:10}}>내 프롬프트 점검</div>
+        <Checklist items={['<b>역할</b>을 지정했는가','<b>맥락</b>(무엇·누구)이 있는가','<b>제약</b>(조건·분량)이 있는가','<b>출력 형식</b>을 정했는가']}/>
+      </div>
+    </div>
+    <Note label="핵심">특히 <b>④ 다듬기 틀</b>이 실무의 심장 — 한 번에 완성하려 말고 반복해서 좁혀가세요.</Note>
+  </div>
+);
+
+/* ── 슬라이드 목록 ── */
+const SLIDES = [
+  {c:Cover, sec:'표지'},
+  {c:Contents, sec:'목차'},
+  {c:()=><Divider part="PART 0" title={"오리엔테이션"} agenda={{label:'Intro',items:['가이드 지도','두 산출물','도구 스택']}}/>, sec:'Part 0'},
+  {c:Orientation, sec:'Part 0'},
+  {c:LearnPath, sec:'Part 0'},
+  {c:()=><Divider part="PART 1" title={"취업 문서"} agenda={{label:'취업',items:['이력서','자기소개서','포트폴리오']}}/>, sec:'Part 1'},
+  {c:JobDocs, sec:'Part 1'},
+  {c:SkillWriting, sec:'Part 1'},
+  {c:StarTemplate, sec:'Part 1'},
+  {c:ResumeChecklist, sec:'Part 1'},
+  {c:()=><Divider part="PART 2" title={"기술 문서"} agenda={{label:'5단 구조',items:['개요','시스템 구조','핵심 기능','고민과 선택','결과·회고']}}/>, sec:'Part 2'},
+  {c:FiveStruct, sec:'Part 2'},
+  {c:OverviewConcept, sec:'Part 2 · 개요'},
+  {c:ExOverview, sec:'Part 2 · 개요'},
+  {c:StructureConcept, sec:'Part 2 · 구조'},
+  {c:ExStructure, sec:'Part 2 · 구조'},
+  {c:FeatureConcept, sec:'Part 2 · 기능'},
+  {c:ExFeature, sec:'Part 2 · 기능'},
+  {c:TradeoffConcept, sec:'Part 2 · 선택'},
+  {c:ExTradeoff, sec:'Part 2 · 선택'},
+  {c:RetroConcept, sec:'Part 2 · 회고'},
+  {c:ExRetro, sec:'Part 2 · 회고'},
+  {c:()=><Divider part="PART 3" title={"프레젠테이션\n레이아웃"} agenda={{label:'Layout',items:['3원칙','8유형','스타일·테마']}}/>, sec:'Part 3'},
+  {c:LayoutPrinciples, sec:'Part 3'},
+  {c:Layouts, sec:'Part 3'},
+  {c:ThemeGuide, sec:'Part 3'},
+  {c:()=><Divider part="PART 4" title={"Mermaid\n다이어그램"} agenda={{label:'5종',items:['클래스','시퀀스','상태(FSM)','플로우차트 · ER']}}/>, sec:'Part 4'},
+  {c:WhichDiagram, sec:'Part 4'},
+  {c:()=><DiagramNarrative eyebrow="Part 4 · Mermaid" rlabel="클래스 다이어그램" title="클래스 다이어그램" label="런타임 구조" img="images/class.png"
+      steps={[{h:'무엇으로 이루어졌나',items:['8개 클래스의 <b>관계</b>를 한눈에','인터페이스 구현 · 의존 · 구성 · 집約']},
+              {h:'느슨한 결합의 증거',items:['CraftingUI → <b>ICraftingService</b> 점선 의존','이벤트로 결과 전파 = DIP']}]}/>, sec:'Part 4'},
+  {c:()=><DiagramNarrative eyebrow="Part 4 · Mermaid" rlabel="시퀀스 다이어그램" title="시퀀스 다이어그램" label="성공 흐름" img="images/sequence.png"
+      steps={[{h:'시간 순서의 상호작용',items:['UI → Manager → Inventory 호출 순서','검증 → 확률판정 → 소비 → 추가']},
+              {h:'이벤트는 점선',items:['Manager는 UI를 <b>직접 호출하지 않음</b>','OnCraftCompleted로 되돌려줌']}]}/>, sec:'Part 4'},
+  {c:()=><DiagramNarrative eyebrow="Part 4 · Mermaid" rlabel="상태(FSM) 다이어그램" title="상태(FSM) 다이어그램" label="제작 전이" img="images/state.png" imgStyle={{maxHeight:'420px'}}
+      steps={[{h:'어떤 상태를 오가나',items:['Idle → Validating → Crafting','성공/실패로 <b>분기</b> 후 Idle 복귀']},
+              {h:'확률 규칙의 시각화',items:['Crafting에서 Roll로 Succeeded/Failed','반복 제작 가능 구조']}]}/>, sec:'Part 4'},
+  {c:()=>(
+    <div className="slide" style={{padding:'44px 60px',display:'flex',flexDirection:'column'}}>
+      <Head eyebrow="Part 4 · Mermaid" rlabel="플로우차트 · ER"/>
+      <div className="title-lg" style={{fontSize:34,margin:'16px 0 12px'}}>플로우차트 · ER</div>
+      <div style={{display:'flex',gap:24,flex:1,minHeight:0}}>
+        {[['images/flow.png','로직의 갈림길 — RequestCraft 분기'],['images/er.png','데이터 저장 구조']].map(([src,cap])=>(
+          <div key={src} style={{flex:1,display:'flex',flexDirection:'column',minWidth:0,minHeight:0}}>
+            <div className="card" style={{flex:1,minHeight:0,display:'flex',alignItems:'center',justifyContent:'center',padding:18,background:'#fff'}}>
+              <img src={src} style={{maxWidth:'100%',maxHeight:'100%',objectFit:'contain'}}/>
+            </div>
+            <div style={{marginTop:10,textAlign:'center',color:'var(--muted)',fontSize:16}}>{cap}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  ), sec:'Part 4'},
+  {c:MermaidCheatsheet, sec:'Part 4'},
+  {c:DiagramSummary, sec:'Part 4'},
+  {c:()=><Divider part="PART 5" title={"AI 활용\n워크플로우"} agenda={{label:'Workflow',items:['5단계 흐름','다듬기가 실력','복붙 금지']}}/>, sec:'Part 5'},
+  {c:AIConcept, sec:'Part 5'},
+  {c:AIWorkflow, sec:'Part 5'},
+  {c:PromptSteps, sec:'Part 5'},
+  {c:AIRedFlags, sec:'Part 5'},
+  {c:Caution, sec:'Part 5'},
+  {c:()=><Divider part="PART 6" title={"좋은 레이아웃\n프롬프트"} agenda={{label:'Prompt',items:['4요소','두 트랙','만능 틀 4개']}}/>, sec:'Part 6'},
+  {c:PromptConcept, sec:'Part 6'},
+  {c:Prompts, sec:'Part 6'},
+  {c:PromptGallery, sec:'Part 6'},
+  {c:UniversalTemplates, sec:'Part 6'},
+  {c:Closing, sec:'마무리'},
+];
+
+/* ── 무대 스케일 ── */
+function useScale(){
+  const [s,setS]=useState(1);
+  useEffect(()=>{
+    const fit=()=>setS(Math.min(window.innerWidth/1280,(window.innerHeight-44)/720));
+    fit(); window.addEventListener('resize',fit); return ()=>window.removeEventListener('resize',fit);
+  },[]);
+  return s;
+}
+
+// 복습본(인쇄) 모드: 전 슬라이드를 세로 스택으로 렌더
+function Booklet(){
+  return (
+    <>
+      <div className="printbar">
+        <button onClick={()=>window.print()}>복습본 인쇄 / PDF 저장</button>
+        <a href="#1">← 덱으로 돌아가기</a>
+        <span className="ph">Ctrl+P → 대상을 'PDF로 저장'</span>
+      </div>
+      <div className="booklet">
+        {SLIDES.map((s,k)=>{const C=s.c; return <C key={k}/>;})}
+      </div>
+    </>
+  );
+}
+
+function Deck(){
+  const n=SLIDES.length;
+  const [i,setI]=useState(()=>{const h=parseInt(location.hash.slice(1),10); return (h>=1&&h<=n)?h-1:0;});
+  const [printMode,setPrintMode]=useState(()=>location.hash.slice(1)==='print');
+  const scale=useScale();
+  const go=useCallback(d=>setI(v=>Math.max(0,Math.min(n-1,v+d))),[n]);
+  useEffect(()=>{
+    const hc=()=>{
+      const h=location.hash.slice(1);
+      if(h==='print'){setPrintMode(true);}
+      else{setPrintMode(false); const num=parseInt(h,10); if(num>=1&&num<=n) setI(num-1);}
+    };
+    window.addEventListener('hashchange',hc); return ()=>window.removeEventListener('hashchange',hc);
+  },[n]);
+  useEffect(()=>{document.body.classList.toggle('printing',printMode);},[printMode]);
+  useEffect(()=>{
+    const k=e=>{
+      if(printMode) return;
+      if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();go(1);}
+      else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(-1);}
+      else if(e.key==='Home')setI(0); else if(e.key==='End')setI(n-1);
+    };
+    window.addEventListener('keydown',k); return ()=>window.removeEventListener('keydown',k);
+  },[go,n,printMode]);
+  useEffect(()=>{if(!printMode) location.hash=i+1;},[i,printMode]);
+
+  if(printMode) return <Booklet/>;
+  const S=SLIDES[i].c;
+  return (
+    <>
+      <div className="stage-wrap" style={{bottom:44}}>
+        <div className="stage" style={{transform:`scale(${scale})`}}><S/></div>
+      </div>
+      <div className="hud">
+        <button onClick={()=>go(-1)} disabled={i===0}>‹</button>
+        <button onClick={()=>go(1)} disabled={i===n-1}>›</button>
+        <span className="count">{String(i+1).padStart(2,'0')} / {n}</span>
+        <span className="secname">{SLIDES[i].sec}</span>
+        <div className="prog"><span style={{width:`${(i+1)/n*100}%`}}/></div>
+        <button className="mode" onClick={()=>{location.hash='print';}}>복습본</button>
+        <span className="hint">← →</span>
+      </div>
+    </>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Deck/>);
+</script>
+</body>
+</html>

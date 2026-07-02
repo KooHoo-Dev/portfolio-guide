@@ -34,15 +34,17 @@
 
 ```
 portfolio-guide-v2/
+├── index.html              # 허브 랜딩 (Pages 진입점: 덱·쇼케이스·본문 링크)
 ├── src/                    # Part 0~6 Markdown 소스 (읽기용 가이드 본문)
 │   └── _example-spec.md    # 관통 예제(크래프팅) 스펙 — 내부 참조용, 변경 금지 기준선
 ├── assets/diagrams/        # Mermaid 5종: PNG(렌더링본) + mmd(소스)
-├── slides/                 # Marp 발표 덱
-│   ├── presentation.md     #   슬라이드 소스
-│   ├── theme.css           #   커스텀 테마 (미니멀 + 다크 강조)
-│   ├── presentation.pdf    #   빌드 결과 (PDF)
-│   ├── presentation.html   #   빌드 결과 (HTML)
-│   └── images/             #   슬라이드용 다이어그램 PNG (assets 복사본)
+├── slides/                 # 발표 덱
+│   ├── deck.html           #   ★ 현행 발표 덱 (단일 HTML + React CDN, 방향키 내비)
+│   ├── presentation.md     #   (백업) 구 Marp 슬라이드 소스
+│   ├── theme.css           #   (백업) 구 Marp 커스텀 테마
+│   ├── presentation.pdf    #   (백업) 구 Marp 빌드 결과 (PDF)
+│   ├── presentation.html   #   (백업) 구 Marp 빌드 결과 (HTML)
+│   └── images/             #   덱용 다이어그램 PNG (assets 복사본)
 └── showcase/               # React 레이아웃 쇼케이스
     ├── index.html          #   단일 HTML (React CDN + Tailwind CDN)
     └── images/             #   쇼케이스용 다이어그램 PNG (assets 복사본)
@@ -75,8 +77,11 @@ Part 4~6과 발표물의 **모든 예시**는 이 하나의 예제로 관통한�
 이 프로젝트를 진행하며 확정한 사항들. 되돌리기 전에 이유를 검토할 것.
 
 1. **두 산출물, 하나의 소스** — Markdown을 소스로, 발표물을 파생. md 일원화를 우선.
-2. **발표 덱 = Marp** — github.io 배포 + PDF export + Markdown 소스 3조건을 만족.
-   Mermaid는 Marp가 직접 렌더링하지 않으므로 **PNG 이미지로 삽입**.
+2. **발표 덱 = 단일 HTML + React CDN 덱** (`slides/deck.html`) — 2026.07 결정 변경.
+   제자 샘플(CoreMerge·포트폴리오 요약 문서)과 저자 예전 PDF 수준의 디테일을 위해
+   Marp에서 **React HTML 덱으로 재구축**. 방향키 내비게이션·크래프팅 예제 워크스루 포함.
+   기존 Marp(`slides/presentation.*`, `theme.css`)는 **백업으로 보관**(구버전, 되돌리기용).
+   Mermaid는 기존 PNG(`slides/images/*.png`)를 그대로 사용.
 3. **레이아웃 쇼케이스 = React** — Part 3의 8개 레이아웃을 "실물"로 보여주는 용도.
    **단일 HTML + React CDN(unpkg) + Tailwind CDN** 방식(입문자가 빌드 없이 파일 하나로 사용).
    정식 npm/Vite 프로젝트는 수강생 자율 학습 과제로만 언급(강제하지 않음).
@@ -86,8 +91,11 @@ Part 4~6과 발표물의 **모든 예시**는 이 하나의 예제로 관통한�
 6. **Mermaid → 이미지 변환은 웹 도구(mermaid.live) 중심** — CLI(mmdc)는 참고로만.
 7. **AI 도구는 "웹 기반 AI 챗봇"으로 중립 표기** — 특정 제품명 고정하지 않음.
 8. **프롬프트는 한글 + 복붙 카드 형식** — 코드 블록 프롬프트 + "이럴 때" 한 줄 설명.
-9. **발표 덱 테마** — 미니멀(밝은 배경) 기본 + 코드/주의점 슬라이드만 다크 강조.
-   강조색 청록 1색, 폰트 Pretendard(본문)·JetBrains Mono(코드).
+9. **발표 덱 테마** — 하이브리드(표지·섹션은 에디토리얼 미니멀 / 내용은 프레임·카드·pill 밀도).
+   강조색 **페리윙클 블루**(#5B6AD0 계열, 저자 예전 PDF 계승 — 2026.07 청록에서 변경).
+   코드/주의점 슬라이드만 다크 강조. 폰트 Pretendard(본문)·JetBrains Mono(코드).
+   모티프: 섹션 번호 헤더, 도트 노드 룰선, pill 라벨, 소프트 인디고 키워드 칩, 코드 라벨칩+화살표.
+   (React 쇼케이스는 기존 청록 유지 — 발표 덱만 블루로 전환됨. 추후 통일 시 함께 조정.)
 
 ---
 
@@ -135,7 +143,11 @@ Part 4~6과 발표물의 **모든 예시**는 이 하나의 예제로 관통한�
 
 ## 빌드 방법
 
-**Marp 발표 덱** (slides/)
+**발표 덱** (slides/deck.html) — 빌드 불필요. 브라우저로 열면 됨(React CDN 방식). ← → 로 이동.
+- 슬라이드는 `deck.html` 내 `SLIDES` 배열로 정의. 다이어그램은 `images/*.png` 상대참조.
+- 크래프팅 예제 코드는 `src/_example-spec.md`를 기준선으로 유지할 것.
+
+**(백업) 구 Marp 발표 덱** (slides/presentation.md) — 참고용 보관본
 ```bash
 # HTML
 marp presentation.md --theme theme.css --no-stdin -o presentation.html --html
