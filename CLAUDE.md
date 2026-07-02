@@ -160,13 +160,20 @@ marp presentation.md --theme theme.css --no-stdin --pdf --allow-local-files -o p
 
 이전 후 이어서 진행할 작업. (Jay가 직접 하거나 Claude Code로 이어감.)
 
-- [ ] **이미지 중복 정리** — `assets/` 단일 소스로 통합할지, 현 3벌 유지할지 결정.
-- [ ] **GitHub Pages 배포 설정** — 배포 타깃(발표 덱/쇼케이스/허브 랜딩) 결정.
-      Marp 자동 빌드를 GitHub Actions로 할지, 로컬 빌드 결과만 올릴지 결정.
-- [ ] **경로 최종 점검** — `src/*.md`의 이미지 참조(`../assets/diagrams/...`)가
-      배포 폴더 구조와 맞는지 일괄 확인.
-- [ ] **Part 3 ↔ 쇼케이스 상호 참조** — Part 3 문서에 "실물 예시는 showcase 참고" 링크 연결.
+- [x] **이미지 중복 정리** — **현 3벌 유지로 결정.** `assets/diagrams/`가 원본(단일 소스),
+      `slides/images/`·`showcase/images/`는 복사본. 쇼케이스·슬라이드를 각각 "폴더 하나만
+      올리면 배포되는 자기완결 산출물"로 둔다는 결정 #3을 지키기 위함(통합 시 `../assets/`로
+      경로가 결합돼 이식성이 깨짐). 다이어그램 수정 시 `assets/` 갱신 후 두 복사본에 반영할 것.
+- [x] **GitHub Pages 배포 설정** — **허브 랜딩 방식으로 결정.** 루트 `index.html`(허브) →
+      발표 덱(`slides/presentation.html`)·쇼케이스(`showcase/index.html`)·가이드 본문 링크.
+      `.github/workflows/deploy-pages.yml`이 main push 시 **레포 전체를 그대로 게시**(재빌드 없음).
+      Marp/Mermaid는 로컬 빌드 유지. 배포 URL: `https://koohoo-dev.github.io/portfolio-guide/`.
+      **남은 수동 작업**: GitHub 레포 Settings → Pages → Source를 "GitHub Actions"로 1회 설정.
+- [x] **경로 최종 점검** — `src/*.md`의 `../assets/diagrams/*.png`는 GitHub 렌더링 경로와 일치.
+      슬라이드·쇼케이스는 각자 `images/*.png` 상대참조로 정상. 확인 완료.
+- [x] **Part 3 ↔ 쇼케이스 상호 참조** — `03-presentation-layouts.md` 3-2절에 쇼케이스 링크 추가.
 - [ ] **README 링크 점검** — 모든 내부 링크·이미지가 GitHub에서 정상 렌더링되는지 확인.
+      (Pages 배포 후 실제 사이트에서 허브→발표 덱·쇼케이스 이동, 본문 이미지 표시 재확인 권장.)
 - [ ] **(선택) 취업 문서 원본 복원 여부** — Part 1 기술 스택 표를 원본 전체로 확장할지,
       Part 2 '고민과 선택'에 PlayerPrefs vs JSON 사례를 부록으로 추가할지.
 

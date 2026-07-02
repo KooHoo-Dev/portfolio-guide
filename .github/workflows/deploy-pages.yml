@@ -1,0 +1,45 @@
+name: Deploy to GitHub Pages
+
+# 정적 사이트(허브 랜딩 + 발표 덱 + 쇼케이스)를 GitHub Pages에 배포한다.
+# 사이트는 이미 빌드된 결과물(index.html, slides/*.html·pdf, showcase/*)을
+# 그대로 게시한다. Marp/Mermaid 빌드는 로컬에서 수행하며, 여기서는 재빌드하지 않는다.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Pages 배포에 필요한 최소 권한
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 동시 배포 방지: 진행 중인 배포는 유지하고 대기 중 실행만 취소
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        # 레포 전체를 업로드한다. src/*.md 등은 소스로 함께 올라가며,
+        # 진입점은 루트 index.html(허브 랜딩)이다.
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

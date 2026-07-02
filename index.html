@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>유니티 개발자 취업·기술 문서 작성 가이드 v2</title>
+<meta name="description" content="유니티(C#) 개발 지망생을 위한 취업 문서 · 기술 문서 작성 가이드. 발표 덱과 레이아웃 쇼케이스." />
+<style>
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+  :root {
+    --ink:#1f2328; --paper:#ffffff; --teal:#0d9488; --tealSoft:#ccfbf1;
+    --line:#e5e7eb; --slate:#1e293b; --muted:#64748b;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Pretendard', -apple-system, sans-serif; }
+  .mono { font-family:'JetBrains Mono','D2Coding',monospace; }
+  body { background:#f8fafc; color:var(--slate); line-height:1.6; }
+  .wrap { max-width:900px; margin:0 auto; padding:64px 24px 80px; }
+  header { margin-bottom:48px; }
+  .tag { font-size:12px; letter-spacing:.1em; text-transform:uppercase; font-weight:700; color:var(--teal); }
+  h1 { font-size:34px; font-weight:800; letter-spacing:-.02em; margin-top:8px; color:#0f172a; }
+  .lead { color:var(--muted); margin-top:14px; max-width:620px; }
+  .quote { margin-top:20px; padding:14px 18px; background:var(--tealSoft); border-radius:10px;
+           color:#115e59; font-weight:600; font-size:15px; }
+  .cards { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; margin-top:8px; }
+  @media (max-width:640px){ .cards { grid-template-columns:1fr; } }
+  .card { display:block; background:var(--paper); border:1px solid var(--line); border-radius:14px;
+          padding:24px; text-decoration:none; color:inherit; transition:transform .12s, box-shadow .12s, border-color .12s; }
+  .card:hover { transform:translateY(-3px); box-shadow:0 12px 28px -14px rgba(0,0,0,.22); border-color:var(--teal); }
+  .card .num { font-size:22px; font-weight:800; color:var(--teal); }
+  .card h2 { font-size:18px; font-weight:700; margin-top:6px; color:#0f172a; }
+  .card p { font-size:14px; color:var(--muted); margin-top:6px; }
+  .card .go { display:inline-block; margin-top:14px; font-size:13px; font-weight:700; color:var(--teal); }
+  .sub { display:flex; gap:12px; flex-wrap:wrap; margin-top:14px; }
+  .sub a { font-size:13px; color:var(--muted); text-decoration:none; border:1px solid var(--line);
+           border-radius:8px; padding:6px 12px; background:var(--paper); transition:border-color .12s,color .12s; }
+  .sub a:hover { border-color:var(--teal); color:var(--teal); }
+  section.block { margin-top:40px; }
+  section.block > .tag { display:block; margin-bottom:16px; }
+  footer { margin-top:64px; padding-top:24px; border-top:1px solid var(--line);
+           font-size:13px; color:var(--muted); }
+  footer a { color:var(--teal); text-decoration:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="tag">Portfolio &amp; Tech-Doc Guide · v2</div>
+    <h1>유니티 개발자 취업·기술 문서 작성 가이드</h1>
+    <p class="lead">
+      유니티(C#) 개발 지망생을 위한 <b>취업 문서 · 기술 문서 작성 가이드</b>.
+      <em>무엇을 쓸지</em>에 더해 <em>어떻게 보여줄지</em>(레이아웃·다이어그램)와
+      <em>어떻게 빠르게 만들지</em>(AI 워크플로우)까지 다룹니다.
+    </p>
+    <div class="quote">목적은 하나 — 잘 읽히는 문서로 “함께 일하고 싶은 개발자”임을 증명하는 것.</div>
+  </header>
+
+  <section class="block">
+    <span class="tag">바로 보기</span>
+    <div class="cards">
+      <a class="card" href="showcase/index.html">
+        <div class="num">01</div>
+        <h2>레이아웃 쇼케이스</h2>
+        <p>Part 3의 8가지 프레젠테이션 레이아웃을 실제 렌더링(React)으로 확인합니다.</p>
+        <span class="go">열기 →</span>
+      </a>
+      <a class="card" href="slides/presentation.html">
+        <div class="num">02</div>
+        <h2>발표 덱 (Marp)</h2>
+        <p>가이드 핵심을 요약한 발표 슬라이드. 브라우저에서 바로 넘겨 봅니다.</p>
+        <span class="go">열기 →</span>
+        <div class="sub"><a href="slides/presentation.pdf">PDF 내려받기</a></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="block">
+    <span class="tag">가이드 본문 (Part 0~6)</span>
+    <div class="sub">
+      <a href="https://github.com/KooHoo-Dev/portfolio-guide/blob/main/src/00-orientation.md">0 · 오리엔테이션</a>
+      <a href="https://github.com/KooHoo-Dev/portfolio-guide/blob/main/src/01-job-documents.md">1 · 취업 문서</a>
+      <a href="https://github.com/KooHoo-Dev/portfolio-guide/blob/main/src/02-tech-documents.md">2 · 기술 문서</a>
+      <a href="https://github.com/KooHoo-Dev/portfolio-guide/blob/main/src/03-presentation-layouts.md">3 · 레이아웃</a>
+      <a href="https://github.com/KooHoo-Dev/portfolio-guide/blob/main/src/04-mermaid-diagrams.md">4 · 다이어그램</a>
+      <a href="https://github.com/KooHoo-Dev/portfolio-guide/blob/main/src/05-ai-workflow.md">5 · AI 워크플로우</a>
+      <a href="https://github.com/KooHoo-Dev/portfolio-guide/blob/main/src/06-prompts.md">6 · 프롬프트</a>
+    </div>
+    <p class="lead" style="font-size:13px; margin-top:12px;">
+      본문 Markdown은 GitHub에서 Mermaid 다이어그램이 네이티브로 렌더링됩니다.
+    </p>
+  </section>
+
+  <footer>
+    저자: 김재훈 (Jay / KooHoo) · 문서 Markdown · 다이어그램 Mermaid · 발표 Marp · 쇼케이스 React<br />
+    소스: <a href="https://github.com/KooHoo-Dev/portfolio-guide">github.com/KooHoo-Dev/portfolio-guide</a>
+  </footer>
+</div>
+</body>
+</html>
