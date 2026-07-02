@@ -46,13 +46,12 @@ portfolio-guide-v2/
 │   ├── presentation.html   #   (백업) 구 Marp 빌드 결과 (HTML)
 │   └── images/             #   덱용 다이어그램 PNG (assets 복사본)
 └── showcase/               # 문서 레이아웃 패턴 카탈로그 (13종)
-    ├── index.html          #   단일 HTML (React + Tailwind + Mermaid CDN, 다이어그램 라이브 렌더)
-    └── images/             #   (레거시·미사용) 구 PNG 복사본 — 쇼케이스는 이제 라이브 렌더
+    └── index.html          #   단일 HTML (React + Tailwind + Mermaid CDN, 다이어그램 라이브 렌더)
 ```
 
 > **이미지 사용처**: 원본은 `assets/diagrams/`(src `.md`가 `../assets/`로 참조). **발표 덱**은
-> `slides/images/`의 PNG를 씀. **쇼케이스**는 이제 Mermaid를 **라이브 렌더**하므로
-> `showcase/images/`는 더 이상 쓰지 않음(레거시, 정리 가능 — 아래 TODO).
+> `slides/images/`의 PNG를 씀. **쇼케이스**는 Mermaid를 **라이브 렌더**하므로 이미지 사본이 없음
+> (구 `showcase/images/`는 2026.07 제거).
 
 ---
 
@@ -178,8 +177,8 @@ marp presentation.md --theme theme.css --no-stdin --pdf --allow-local-files -o p
 이전 후 이어서 진행할 작업. (Jay가 직접 하거나 Claude Code로 이어감.)
 
 - [x] **이미지 사용처 정리** — 원본 `assets/diagrams/`, **발표 덱**은 `slides/images/` PNG 사용.
-      **쇼케이스는 라이브 Mermaid 렌더로 전환**돼 `showcase/images/`는 미사용(레거시).
-      → (선택) `showcase/images/` 삭제 가능. 다이어그램 수정 시 `assets/` 갱신 후 `slides/images/`에 반영.
+      **쇼케이스는 라이브 Mermaid 렌더로 전환**돼 이미지 사본 불필요 → 구 `showcase/images/` **삭제 완료(2026.07)**.
+      다이어그램 수정 시 `assets/` 갱신 후 `slides/images/`에 반영.
 - [x] **GitHub Pages 배포 설정** — **허브 랜딩 방식.** 루트 `index.html`(허브, 페리윙클) →
       01 가이드 문서(`slides/deck.html`) · 02 레이아웃 카탈로그(`showcase/index.html`). (가이드 본문 섹션은 제거됨.)
       `.github/workflows/deploy-pages.yml`이 main push 시 **레포 전체를 그대로 게시**(재빌드 없음).
