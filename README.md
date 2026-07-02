@@ -25,17 +25,18 @@
 - **읽기용 가이드** — `src/`의 `.md` 문서. GitHub에서 Mermaid가 네이티브 렌더링된다.
 - **발표·배포용**
   - **발표 덱 (강의용)** — `slides/deck.html` (단일 HTML + React CDN, 방향키로 넘기는 인터랙티브 덱)
-  - **React 레이아웃 쇼케이스** — `showcase/index.html` (Part 3의 8개 레이아웃 실물 예시)
+  - **레이아웃 패턴 카탈로그** — `showcase/index.html` (문서 레이아웃 패턴 13종 · 라이브 Mermaid · 복붙 프롬프트)
   - **(백업) Marp 발표 덱** — `slides/presentation.md` → HTML/PDF (구버전, 참고용 보관)
 
 ## 폴더 구조
 
 ```
 portfolio-guide-v2/
+├── index.html           # 허브 랜딩 (Pages 진입점)
 ├── src/                 # Part 0~6 가이드 본문 (Markdown)
 ├── assets/diagrams/     # Mermaid 다이어그램 (PNG + mmd 소스)
-├── slides/              # Marp 발표 덱 (md + theme.css + PDF/HTML)
-├── showcase/            # React 레이아웃 쇼케이스 (단일 HTML)
+├── slides/              # 발표 덱: deck.html(현행 React) + Marp 백업
+├── showcase/            # 문서 레이아웃 패턴 카탈로그 (단일 HTML, 라이브 Mermaid)
 ├── CLAUDE.md            # Claude Code용 프로젝트 컨텍스트
 └── README.md
 ```
@@ -58,7 +59,7 @@ portfolio-guide-v2/
 
 **발표 덱 (강의용)** — `slides/deck.html`을 브라우저로 열면 된다(CDN 방식, 빌드 불필요). ← → 로 이동.
 
-**레이아웃 쇼케이스** — `showcase/index.html`을 브라우저로 열면 된다(빌드 불필요).
+**레이아웃 패턴 카탈로그** — `showcase/index.html`을 브라우저로 열면 된다(빌드 불필요). 다이어그램은 Mermaid로 라이브 렌더된다.
 
 **(백업) Marp 덱 빌드** (Marp 필요, 구버전 참고용)
 ```bash
@@ -70,7 +71,7 @@ marp presentation.md --theme theme.css --no-stdin --pdf --allow-local-files -o p
 ## 크레딧
 
 - 저자: 김재훈 (Jay / KooHoo)
-- 문서 형식: Markdown · 다이어그램: Mermaid · 발표: Marp · 쇼케이스: React
+- 문서 형식: Markdown · 다이어그램: Mermaid · 발표 덱·쇼케이스: React (구 발표 Marp는 백업)
 
 ---
 

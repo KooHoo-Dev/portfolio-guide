@@ -34,7 +34,7 @@
 
 ```
 portfolio-guide-v2/
-├── index.html              # 허브 랜딩 (Pages 진입점: 덱·쇼케이스·본문 링크)
+├── index.html              # 허브 랜딩 (Pages 진입점: 01 가이드 문서(덱) · 02 레이아웃 카탈로그)
 ├── src/                    # Part 0~6 Markdown 소스 (읽기용 가이드 본문)
 │   └── _example-spec.md    # 관통 예제(크래프팅) 스펙 — 내부 참조용, 변경 금지 기준선
 ├── assets/diagrams/        # Mermaid 5종: PNG(렌더링본) + mmd(소스)
@@ -45,13 +45,14 @@ portfolio-guide-v2/
 │   ├── presentation.pdf    #   (백업) 구 Marp 빌드 결과 (PDF)
 │   ├── presentation.html   #   (백업) 구 Marp 빌드 결과 (HTML)
 │   └── images/             #   덱용 다이어그램 PNG (assets 복사본)
-└── showcase/               # React 레이아웃 쇼케이스
-    ├── index.html          #   단일 HTML (React CDN + Tailwind CDN)
-    └── images/             #   쇼케이스용 다이어그램 PNG (assets 복사본)
+└── showcase/               # 문서 레이아웃 패턴 카탈로그 (13종)
+    ├── index.html          #   단일 HTML (React + Tailwind + Mermaid CDN, 다이어그램 라이브 렌더)
+    └── images/             #   (레거시·미사용) 구 PNG 복사본 — 쇼케이스는 이제 라이브 렌더
 ```
 
-> **이미지 중복 주의**: 다이어그램 PNG가 `assets/`, `slides/images/`, `showcase/images/`
-> 세 곳에 복사돼 있다. 단일 소스로 통합할지는 아직 미결(아래 TODO 참조).
+> **이미지 사용처**: 원본은 `assets/diagrams/`(src `.md`가 `../assets/`로 참조). **발표 덱**은
+> `slides/images/`의 PNG를 씀. **쇼케이스**는 이제 Mermaid를 **라이브 렌더**하므로
+> `showcase/images/`는 더 이상 쓰지 않음(레거시, 정리 가능 — 아래 TODO).
 
 ---
 
@@ -82,8 +83,11 @@ Part 4~6과 발표물의 **모든 예시**는 이 하나의 예제로 관통한�
    Marp에서 **React HTML 덱으로 재구축**. 방향키 내비게이션·크래프팅 예제 워크스루 포함.
    기존 Marp(`slides/presentation.*`, `theme.css`)는 **백업으로 보관**(구버전, 되돌리기용).
    Mermaid는 기존 PNG(`slides/images/*.png`)를 그대로 사용.
-3. **레이아웃 쇼케이스 = React** — Part 3의 8개 레이아웃을 "실물"로 보여주는 용도.
-   **단일 HTML + React CDN(unpkg) + Tailwind CDN** 방식(입문자가 빌드 없이 파일 하나로 사용).
+3. **레이아웃 쇼케이스 = 문서 레이아웃 패턴 카탈로그** (`showcase/index.html`) — 2026.07 재구성.
+   기존 "Part 3의 8개 슬라이드 레이아웃 실물"에서 **읽는 기술 문서의 레이아웃 패턴 13종**
+   (헤더·개요·다이어그램·코드·비교·콜아웃·절차·회고·스크린샷·스택표·카드그리드·트러블슈팅·타임라인)으로 전환.
+   각 패턴 = 이럴 때→이렇게→왜→주의 + 실물 문서 예시 + **복붙용 한글 프롬프트**(복사 버튼).
+   **단일 HTML + React CDN + Tailwind CDN + Mermaid CDN** — 다이어그램은 PNG 대신 **라이브 렌더**(깨짐 방지).
    정식 npm/Vite 프로젝트는 수강생 자율 학습 과제로만 언급(강제하지 않음).
 4. **Mermaid 5종** — 클래스/시퀀스/상태(FSM)/플로우차트/ER. 테마는 **default**로 통일.
 5. **Part 4는 "AI 생성 전제"** — 기본 문법은 저자가 별도 교육. 가이드는 "읽고 고치는 법"과
@@ -95,7 +99,7 @@ Part 4~6과 발표물의 **모든 예시**는 이 하나의 예제로 관통한�
    강조색 **페리윙클 블루**(#5B6AD0 계열, 저자 예전 PDF 계승 — 2026.07 청록에서 변경).
    코드/주의점 슬라이드만 다크 강조. 폰트 Pretendard(본문)·JetBrains Mono(코드).
    모티프: 섹션 번호 헤더, 도트 노드 룰선, pill 라벨, 소프트 인디고 키워드 칩, 코드 라벨칩+화살표.
-   (React 쇼케이스는 기존 청록 유지 — 발표 덱만 블루로 전환됨. 추후 통일 시 함께 조정.)
+   (2026.07: 쇼케이스·허브 랜딩도 페리윙클로 통일 완료 — 세 산출물(허브·덱·쇼케이스) 브랜드 일치.)
 
 ---
 
@@ -159,8 +163,9 @@ marp presentation.md --theme theme.css --no-stdin --pdf --allow-local-files -o p
 - 입문자/일반: [mermaid.live](https://mermaid.live)에 `.mmd` 내용을 붙여 PNG/SVG로 export.
 - CLI: `mmdc -i class.mmd -o class.png` (mermaid-cli 설치 필요).
 
-**React 쇼케이스** (showcase/)
-- `index.html`을 브라우저로 열면 됨(CDN 방식이라 빌드 불필요).
+**레이아웃 패턴 카탈로그** (showcase/index.html) — 문서 레이아웃 패턴 13종
+- 브라우저로 열면 됨(React + Tailwind + Mermaid CDN, 빌드 불필요). 다이어그램은 `.mmd` 정의에서 **라이브 렌더**.
+- 패턴/프롬프트는 `index.html` 내 `PATTERNS`·`PROMPTS`, Mermaid 정의는 `SEQ`/`CLS` 상수로 관리.
 
 > **환경 참고**: 이 프로젝트를 만든 원 환경은 일부 CDN·브라우저 다운로드가 네트워크
 > 정책으로 제한되어, Marp PDF는 로컬 Chromium 경로를 지정해 빌드했다. 일반 환경에서는
@@ -172,15 +177,13 @@ marp presentation.md --theme theme.css --no-stdin --pdf --allow-local-files -o p
 
 이전 후 이어서 진행할 작업. (Jay가 직접 하거나 Claude Code로 이어감.)
 
-- [x] **이미지 중복 정리** — **현 3벌 유지로 결정.** `assets/diagrams/`가 원본(단일 소스),
-      `slides/images/`·`showcase/images/`는 복사본. 쇼케이스·슬라이드를 각각 "폴더 하나만
-      올리면 배포되는 자기완결 산출물"로 둔다는 결정 #3을 지키기 위함(통합 시 `../assets/`로
-      경로가 결합돼 이식성이 깨짐). 다이어그램 수정 시 `assets/` 갱신 후 두 복사본에 반영할 것.
-- [x] **GitHub Pages 배포 설정** — **허브 랜딩 방식으로 결정.** 루트 `index.html`(허브) →
-      발표 덱(`slides/presentation.html`)·쇼케이스(`showcase/index.html`)·가이드 본문 링크.
+- [x] **이미지 사용처 정리** — 원본 `assets/diagrams/`, **발표 덱**은 `slides/images/` PNG 사용.
+      **쇼케이스는 라이브 Mermaid 렌더로 전환**돼 `showcase/images/`는 미사용(레거시).
+      → (선택) `showcase/images/` 삭제 가능. 다이어그램 수정 시 `assets/` 갱신 후 `slides/images/`에 반영.
+- [x] **GitHub Pages 배포 설정** — **허브 랜딩 방식.** 루트 `index.html`(허브, 페리윙클) →
+      01 가이드 문서(`slides/deck.html`) · 02 레이아웃 카탈로그(`showcase/index.html`). (가이드 본문 섹션은 제거됨.)
       `.github/workflows/deploy-pages.yml`이 main push 시 **레포 전체를 그대로 게시**(재빌드 없음).
-      Marp/Mermaid는 로컬 빌드 유지. 배포 URL: `https://koohoo-dev.github.io/portfolio-guide/`.
-      **남은 수동 작업**: GitHub 레포 Settings → Pages → Source를 "GitHub Actions"로 1회 설정.
+      배포 URL: `https://koohoo-dev.github.io/portfolio-guide/`. Pages Source="GitHub Actions" 설정 완료·배포 확인됨.
 - [x] **경로 최종 점검** — `src/*.md`의 `../assets/diagrams/*.png`는 GitHub 렌더링 경로와 일치.
       슬라이드·쇼케이스는 각자 `images/*.png` 상대참조로 정상. 확인 완료.
 - [x] **Part 3 ↔ 쇼케이스 상호 참조** — `03-presentation-layouts.md` 3-2절에 쇼케이스 링크 추가.
