@@ -1,0 +1,27 @@
+erDiagram
+    ITEM ||--o{ RECIPE_INGREDIENT : "재료로 쓰임"
+    ITEM ||--o{ PLAYER_INVENTORY : "보관됨"
+    ITEM ||--o| RECIPE : "결과물"
+    RECIPE ||--|{ RECIPE_INGREDIENT : "필요 재료 구성"
+
+    ITEM {
+        string item_id PK "예: WOOD_001"
+        string name
+        string category
+    }
+    RECIPE {
+        string recipe_id PK
+        string result_item_id FK
+        int result_amount
+        float success_rate
+    }
+    RECIPE_INGREDIENT {
+        string recipe_id PK, FK
+        string item_id PK, FK
+        int required_amount
+    }
+    PLAYER_INVENTORY {
+        string player_id PK, FK
+        string item_id PK, FK
+        int quantity
+    }

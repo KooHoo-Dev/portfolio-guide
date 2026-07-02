@@ -1,0 +1,167 @@
+/* @theme guide-v2
+ * 미니멀 밝은 배경 기본 + 코드 슬라이드 다크 강조
+ * 대상: 유니티 개발자 취업 문서 가이드 발표 덱
+ */
+
+/* @theme guide-v2 */
+
+:root {
+  --bg: #ffffff;
+  --fg: #1f2328;
+  --muted: #6b7280;
+  --accent: #0d9488;      /* 청록 강조 1색 */
+  --accent-soft: #ccfbf1;
+  --line: #e5e7eb;
+  --code-bg: #1e293b;     /* 코드/다크 슬라이드 배경 */
+  --code-fg: #e2e8f0;
+  --font-sans: 'Pretendard', 'Noto Sans KR', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'D2Coding', monospace;
+}
+
+section {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 26px;
+  line-height: 1.55;
+  padding: 56px 64px;
+  justify-content: flex-start;
+}
+
+/* 위계: 제목 > 소제목 > 본문 */
+h1 {
+  font-size: 46px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+}
+h2 {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--fg);
+  border-bottom: 3px solid var(--accent);
+  padding-bottom: 8px;
+  margin: 0 0 24px;
+  display: inline-block;
+}
+h3 {
+  font-size: 27px;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 20px 0 8px;
+}
+
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--muted); font-style: normal; }
+
+ul, ol { margin: 6px 0; padding-left: 1.2em; }
+li { margin: 6px 0; }
+
+/* eyebrow(작은 라벨) */
+.eyebrow {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* 코드 */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--accent-soft);
+  color: #0f766e;
+  padding: 2px 7px;
+  border-radius: 5px;
+}
+pre {
+  background: var(--code-bg);
+  border-radius: 10px;
+  padding: 20px 24px;
+  font-size: 20px;
+  line-height: 1.5;
+  overflow: visible;
+}
+pre code {
+  background: transparent;
+  color: var(--code-fg);
+  padding: 0;
+  font-size: 20px;
+}
+
+/* 표 */
+table {
+  border-collapse: collapse;
+  font-size: 21px;
+  width: 100%;
+}
+th {
+  background: var(--accent);
+  color: #fff;
+  padding: 8px 14px;
+  text-align: left;
+}
+td { padding: 8px 14px; border-bottom: 1px solid var(--line); }
+tr:nth-child(even) td { background: #f9fafb; }
+
+/* 이미지(다이어그램) 중앙 정렬 + 여백 */
+img { display: block; margin: 0 auto; }
+
+/* 페이지 번호 */
+section::after {
+  color: var(--muted);
+  font-size: 16px;
+}
+
+/* ── 유틸리티 클래스 (슬라이드별 지정) ── */
+
+/* 표지 */
+section.title {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(160deg, #ffffff 0%, #f0fdfa 100%);
+}
+section.title h1 { font-size: 60px; }
+section.title .sub { font-size: 28px; color: var(--muted); margin-top: 4px; }
+section.title .author { font-size: 22px; margin-top: 40px; color: var(--fg); }
+
+/* 다크 슬라이드(코드/다이어그램 강조) */
+section.dark {
+  background: var(--code-bg);
+  color: var(--code-fg);
+}
+section.dark h1, section.dark h2, section.dark h3 { color: #fff; }
+section.dark h2 { border-bottom-color: var(--accent); }
+section.dark strong { color: #5eead4; }
+section.dark em { color: #94a3b8; }
+section.dark table td { border-bottom-color: #334155; }
+section.dark tr:nth-child(even) td { background: #263449; }
+
+/* 섹션 구분(챕터 표지) */
+section.divider {
+  justify-content: center;
+  background: var(--accent);
+  color: #fff;
+}
+section.divider h1 { color: #fff; font-size: 52px; }
+section.divider .eyebrow { color: var(--accent-soft); }
+
+/* 2단 레이아웃 */
+section.split { }
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  align-items: start;
+}
+
+/* 다이어그램 중심: 이미지 크게 */
+section.diagram img { max-height: 460px; }
+section.diagram .caption {
+  text-align: center;
+  color: var(--muted);
+  font-size: 20px;
+  margin-top: 12px;
+}

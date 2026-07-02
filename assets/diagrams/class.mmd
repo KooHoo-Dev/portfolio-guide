@@ -1,0 +1,30 @@
+classDiagram
+    class ICraftingService {
+        <<interface>>
+        +event OnCraftCompleted
+        +RequestCraft(recipeId) void
+    }
+    class CraftingManager {
+        -Inventory inventory
+        -IReadOnlyList~Recipe~ recipes
+        +RequestCraft(recipeId) void
+    }
+    class Inventory {
+        +HasIngredients(items) bool
+        +Consume(items, ratio) void
+        +Add(item) void
+    }
+    class Recipe {
+        +string Id
+        +float SuccessRate
+        +Ingredients
+        +Result
+    }
+    class CraftingUI {
+        -ICraftingService crafting
+        +OnCraftButtonClicked(id) void
+    }
+    ICraftingService <|.. CraftingManager : implements
+    CraftingManager --> Inventory : uses
+    CraftingManager --> Recipe : holds
+    CraftingUI ..> ICraftingService : depends on

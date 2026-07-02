@@ -1,0 +1,15 @@
+sequenceDiagram
+    actor Player
+    participant UI as CraftingUI
+    participant Mgr as CraftingManager
+    participant Inv as Inventory
+
+    Player->>UI: 제작 버튼 클릭(recipeId)
+    UI->>Mgr: RequestCraft(recipeId)
+    Mgr->>Inv: HasIngredients(recipe)
+    Inv-->>Mgr: true
+    Note over Mgr: 확률 판정 roll() < SuccessRate
+    Mgr->>Inv: Consume(ingredients, 1.0)
+    Mgr->>Inv: Add(result)
+    Mgr-->>UI: OnCraftCompleted(성공)
+    UI-->>Player: 성공 연출 표시
