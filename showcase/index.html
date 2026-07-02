@@ -3,198 +3,634 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>레이아웃 쇼케이스 · 유니티 개발자 문서 가이드</title>
+<title>기술 문서 레이아웃 패턴 · 유니티 개발자 문서 가이드</title>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: { colors: { brand: {
+    50:'#EDEFFB',100:'#E0E4FA',200:'#C7CCF2',300:'#A9B1EC',400:'#8B95E4',
+    500:'#5B6AD0',600:'#4E5CC5',700:'#3E4CAB',800:'#333F8C',900:'#2C3576' } } } } };
+</script>
 <style>
   @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
-  :root { --ink:#1f2328; --paper:#ffffff; --teal:#0d9488; --tealSoft:#ccfbf1; --line:#e5e7eb; --slate:#1e293b; }
-  * { font-family: 'Pretendard', -apple-system, sans-serif; }
-  .mono { font-family: 'JetBrains Mono', 'D2Coding', monospace; }
-  /* 슬라이드 프레임: 실제 16:9 비율로 '완성 실물' 느낌 */
-  .slide { aspect-ratio: 16/9; border:1px solid var(--line); border-radius:14px; overflow:hidden; box-shadow:0 10px 30px -12px rgba(0,0,0,.18); }
-  .tag { font-size:11px; letter-spacing:.08em; text-transform:uppercase; font-weight:700; }
+  :root { --ink:#20233A; --paper:#ffffff; --indigo:#5B6AD0; --indigo-deep:#3E4CAB;
+          --indigo-soft:#EDEFFB; --line:#E7E9F4; --muted:#71768F; }
+  * { font-family:'Pretendard',-apple-system,sans-serif; word-break:keep-all; }
+  .mono { font-family:'JetBrains Mono','D2Coding',monospace; }
+  .tag { font-size:11px; letter-spacing:.09em; text-transform:uppercase; font-weight:800; }
   html { scroll-behavior:smooth; }
+
+  /* ── 문서 페이지 목업 (읽을 수 있는 기술 문서) ── */
+  .doc { background:#fff; border:1px solid var(--line); border-radius:14px;
+         padding:34px 42px; box-shadow:0 14px 38px -18px rgba(30,33,58,.22); }
+  .doc .dh1 { font-size:26px; font-weight:800; color:var(--ink); letter-spacing:-.01em; line-height:1.25; }
+  .doc .dsub { font-size:15px; color:var(--muted); margin-top:6px; }
+  .doc .dh2 { font-size:20px; font-weight:800; color:var(--ink); margin-bottom:6px; }
+  .doc .dh2 .n { color:var(--indigo); margin-right:8px; }
+  .doc .dh3 { font-size:15px; font-weight:800; color:var(--indigo-deep); margin:14px 0 4px; }
+  .doc p { font-size:15px; line-height:1.85; color:#3a3f52; margin:9px 0; }
+  .doc p .tagi { font-size:12px; font-weight:800; color:var(--indigo); }
+  .doc b, .doc strong { color:var(--indigo-deep); }
+  .doc hr { border:0; border-top:1px solid var(--line); margin:18px 0; }
+  .doc figure { margin:16px 0; }
+  .doc figcaption { text-align:center; font-size:13px; color:var(--muted); margin-top:8px; }
+  .doc table.d { width:100%; border-collapse:collapse; font-size:14px; margin:12px 0; }
+  .doc table.d th { background:var(--indigo-soft); color:var(--indigo-deep); text-align:left; padding:9px 13px; font-weight:800; }
+  .doc table.d td { padding:9px 13px; border-top:1px solid var(--line); vertical-align:top; color:#3a3f52; }
+  .doc pre { background:#1E2138; color:#E6E8F5; border-radius:10px; padding:16px 18px;
+             font-family:var(--mono); font-size:12.5px; line-height:1.65; overflow:auto; margin:12px 0; }
+  .doc pre .c { color:#8890BE; } .doc pre .k { color:#C4A0FF; }
+  .doc .callout { border-left:4px solid var(--indigo); background:var(--indigo-soft);
+                  border-radius:0 10px 10px 0; padding:14px 18px; margin:16px 0; font-size:15px; color:var(--indigo-deep); line-height:1.7; }
+  .doc .callout .cl { font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; opacity:.8; }
+  .doc ol.steps { margin:12px 0; padding:0; counter-reset:st; list-style:none; }
+  .doc ol.steps li { position:relative; padding:9px 0 9px 40px; font-size:15px; line-height:1.7; color:#3a3f52; border-bottom:1px solid var(--line); }
+  .doc ol.steps li:last-child { border-bottom:0; }
+  .doc ol.steps li:before { counter-increment:st; content:counter(st); position:absolute; left:0; top:8px;
+    width:26px; height:26px; border-radius:50%; background:var(--indigo); color:#fff; font-weight:800; font-size:13px;
+    display:flex; align-items:center; justify-content:center; }
+  .doc table.meta { border-collapse:collapse; font-size:14px; margin-top:14px; }
+  .doc table.meta td { padding:5px 0; }
+  .doc table.meta .k { color:var(--muted); font-weight:800; padding-right:20px; white-space:nowrap; }
+  .doc ul.why { margin:8px 0; padding-left:0; list-style:none; }
+  .doc ul.why li { position:relative; padding:5px 0 5px 20px; font-size:14.5px; line-height:1.7; color:#3a3f52; }
+  .doc ul.why li:before { content:'▸'; position:absolute; left:0; color:var(--indigo); font-weight:800; }
+  .mmd svg { max-width:100%; height:auto; }
+  .mmd { display:flex; justify-content:center; }
+  /* 스크린샷(게임 UI) 목업 */
+  .shot { background:#12151f; border-radius:10px; padding:18px; display:flex; flex-direction:column; gap:12px; }
+  .shot .st { color:#cfd3e6; font-size:13px; font-weight:800; }
+  .shot .row { display:flex; gap:8px; align-items:center; }
+  .shot .slot { width:28px; height:28px; border-radius:6px; background:#242a40; border:1px solid #3a4060; }
+  .shot .slot.f { background:#5B6AD0; border-color:#8B95E4; }
+  .shot .arrow { color:#8B95E4; font-weight:800; }
+  .shot .btn { margin-left:auto; background:#5B6AD0; color:#fff; font-size:11px; font-weight:800; border-radius:6px; padding:7px 14px; }
+  /* 타임라인 */
+  .tl { position:relative; margin:14px 0 4px; padding-left:28px; }
+  .tl:before { content:''; position:absolute; left:7px; top:8px; bottom:10px; width:2px; background:#C7CCF2; }
+  .tl .ti { position:relative; padding:9px 0; }
+  .tl .ti:before { content:''; position:absolute; left:-25px; top:13px; width:12px; height:12px; border-radius:50%;
+    background:var(--indigo); border:2px solid #fff; box-shadow:0 0 0 2px var(--indigo-soft); }
+  .tl .ti .d { font-size:12px; font-weight:800; color:var(--indigo); }
+  .tl .ti .t { font-size:15px; line-height:1.6; color:#3a3f52; }
+  .tl .ti .t b { color:var(--ink); }
+  /* 트러블슈팅 블록 */
+  .trb { border:1px solid var(--line); border-radius:10px; overflow:hidden; margin:12px 0; }
+  .trb .r { display:flex; border-top:1px solid var(--line); }
+  .trb .r:first-child { border-top:0; }
+  .trb .r .lb { flex:0 0 78px; padding:12px 14px; font-size:13px; font-weight:800; color:#fff; display:flex; align-items:flex-start; }
+  .trb .r.p .lb { background:#CE6A5F; } .trb .r.ca .lb { background:#C08A2A; } .trb .r.s .lb { background:#3BA776; }
+  .trb .r .bd { padding:12px 16px; font-size:14.5px; line-height:1.65; color:#3a3f52; }
+  .trb .r .bd b { color:var(--indigo-deep); }
+  /* 카드 그리드 */
+  .cgrid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:12px 0; }
+  .cgrid .cc { border:1px solid var(--line); border-radius:9px; padding:12px 14px; background:#FBFBFE; }
+  .cgrid .cc .nm { font-size:13.5px; font-weight:800; color:var(--indigo-deep); }
+  .cgrid .cc .ds { font-size:13px; color:#3a3f52; margin-top:3px; line-height:1.5; }
+  /* 복붙용 프롬프트 박스 */
+  .pbox { margin-top:14px; border:1px solid #C7CCF2; border-radius:12px; overflow:hidden; background:#FBFBFE; }
+  .pbox .ph { display:flex; align-items:center; justify-content:space-between; gap:12px;
+              background:var(--indigo-soft); padding:9px 14px; }
+  .pbox .ph .lbl { font-size:12px; font-weight:800; color:var(--indigo-deep); letter-spacing:.02em; }
+  .pbox .ph button { flex:0 0 auto; background:var(--indigo); color:#fff; border:0; border-radius:7px;
+                     padding:6px 15px; font-size:12px; font-weight:800; cursor:pointer; transition:background .12s; }
+  .pbox .ph button:hover { background:var(--indigo-deep); }
+  .pbox .pb { margin:0; padding:14px 16px; font-size:13px; line-height:1.75; color:#33384a;
+              white-space:pre-wrap; word-break:keep-all; }
+  .pbox .pb .br { color:var(--indigo-deep); font-weight:700; }
 </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
 <div id="root"></div>
 
 <script type="text/babel">
-const { useState } = React;
+const { useEffect, useRef } = React;
 
-// ── 8개 레이아웃 실물 예시 (크래프팅 시스템 콘텐츠) ──
+try { mermaid.initialize({ startOnLoad:false, theme:'default', securityLevel:'loose', fontFamily:'Pretendard, sans-serif' }); } catch(e){}
 
-// ① 표지
-const Cover = () => (
-  <div className="slide bg-gradient-to-br from-white to-teal-50 flex flex-col items-center justify-center text-center px-8">
-    <div className="text-4xl font-extrabold tracking-tight text-slate-900">CraftingSystem</div>
-    <div className="text-slate-500 mt-1 text-sm">Technical Documentation</div>
-    <div className="mt-8 text-xs text-slate-600">김재훈 (Jay) · jay.dev@email.com · GitHub</div>
+// 라이브 Mermaid 렌더 (PNG 대신 코드에서 직접 그림 → 절대 깨지지 않음)
+const Mermaid = ({chart, id}) => {
+  const ref = useRef(null);
+  useEffect(()=>{
+    let alive = true;
+    const draw = () => {
+      if (typeof mermaid === 'undefined') { setTimeout(draw, 120); return; }
+      mermaid.render('mm-'+id, chart)
+        .then(({svg}) => { if (alive && ref.current) ref.current.innerHTML = svg; })
+        .catch(() => { if (ref.current) ref.current.innerHTML = '<div class="text-xs text-slate-400">diagram</div>'; });
+    };
+    draw();
+    return () => { alive = false; };
+  }, [chart, id]);
+  return <div ref={ref} className="mmd" />;
+};
+
+const SEQ = `sequenceDiagram
+    actor Player
+    participant UI as CraftingUI
+    participant Mgr as CraftingManager
+    participant Inv as Inventory
+    Player->>UI: 제작 버튼 클릭(recipeId)
+    UI->>Mgr: RequestCraft(recipeId)
+    Mgr->>Inv: HasIngredients(recipe)
+    Inv-->>Mgr: true
+    Note over Mgr: 확률 판정 roll() < SuccessRate
+    Mgr->>Inv: Consume(ingredients, 1.0)
+    Mgr->>Inv: Add(result)
+    Mgr-->>UI: OnCraftCompleted(성공)
+    UI-->>Player: 성공 연출 표시`;
+
+const CLS = `classDiagram
+    class ICraftingService {
+        <<interface>>
+        +event OnCraftCompleted
+        +RequestCraft(recipeId) void
+    }
+    class CraftingManager {
+        -Inventory inventory
+        +RequestCraft(recipeId) void
+    }
+    class Inventory {
+        +HasIngredients(items) bool
+        +Consume(items, ratio) void
+        +Add(item) void
+    }
+    class CraftingUI {
+        -ICraftingService crafting
+    }
+    ICraftingService <|.. CraftingManager : implements
+    CraftingManager --> Inventory : uses
+    CraftingUI ..> ICraftingService : depends on`;
+
+// ══════════════ 문서 레이아웃 목업 (크래프팅 시스템 콘텐츠) ══════════════
+
+// 1) 문서 헤더
+const DocHeader = () => (
+  <div className="doc">
+    <div className="tag text-brand-600">Technical Documentation</div>
+    <div className="dh1 mt-2">CraftingSystem — 아이템 크래프팅 시스템</div>
+    <div className="dsub">Unity(C#) 생존 게임의 확률 기반 제작 시스템 설계·구현 기록</div>
+    <hr/>
+    <table className="meta"><tbody>
+      <tr><td className="k">작성자</td><td>김재훈 (Jay)</td><td className="k" style={{paddingLeft:'32px'}}>기간</td><td>2025.06 ~ 07</td></tr>
+      <tr><td className="k">엔진</td><td>Unity 2022.3 · C# 10</td><td className="k" style={{paddingLeft:'32px'}}>링크</td><td className="text-brand-600">GitHub · 시연 영상</td></tr>
+    </tbody></table>
+  </div>
+);
+// 2) 개요 섹션
+const DocOverview = () => (
+  <div className="doc">
+    <div className="dh2"><span className="n">1.</span>개요</div>
+    <p>본 문서는 재료를 소비해 아이템을 <b>확률적으로 제작</b>하는 크래프팅 시스템의 설계와 구현을 설명합니다.
+      <span className="tagi"> (문제) </span> 기존에는 제작 로직이 UI 코드에 뒤섞여 있어, 새 레시피를 추가할 때마다
+      UI를 수정해야 했고 확률·실패 처리를 테스트하기 어려웠습니다.</p>
+    <p><span className="tagi">(해결) </span> 이를 해결하기 위해 제작 로직을 UI와 분리하고, 결과를 <b>이벤트</b>로 전파하는
+      구조를 도입했습니다. 본 문서는 그 구조·핵심 코드·설계 판단을 다룹니다.</p>
+    <table className="d"><tbody>
+      <tr><th style={{width:'34%'}}>항목</th><th>내용</th></tr>
+      <tr><td>핵심 규칙</td><td>확률 성공 · 실패 시 재료 50% 소비 · 이벤트로 결과 전파</td></tr>
+      <tr><td>예시 레시피</td><td>나무 ×3 + 돌 ×2 → 돌도끼 ×1 (successRate 0.8)</td></tr>
+      <tr><td>네임스페이스</td><td className="mono">Game.Crafting</td></tr>
+    </tbody></table>
+  </div>
+);
+// 3) 본문 + 다이어그램 + 캡션 ★
+const DocDiagram = () => (
+  <div className="doc">
+    <div className="dh2"><span className="n">2.</span>시스템 구조 — 핵심 동작 흐름</div>
+    <p>제작 요청은 <b>UI → Manager → Inventory</b> 순으로 흐릅니다. 아래 시퀀스는 '성공' 케이스에서
+      각 객체가 주고받는 메시지의 순서입니다.</p>
+    <figure>
+      <Mermaid id="seq" chart={SEQ} />
+      <figcaption>그림 1. 제작 성공 시퀀스 — 결과는 이벤트(점선)로 UI에 전달된다</figcaption>
+    </figure>
+    <p>여기서 핵심은 <b>CraftingManager가 CraftingUI를 직접 호출하지 않는다</b>는 점입니다. 결과는
+      <span className="mono"> OnCraftCompleted</span> 이벤트로 전파되어 UI·사운드·통계가 각자 구독합니다.
+      덕분에 결과를 쓸 대상이 늘어도 Manager 코드는 변하지 않습니다. (느슨한 결합)</p>
+  </div>
+);
+// 4) 코드 + 설명 ★
+const DocCode = () => (
+  <div className="doc">
+    <div className="dh2"><span className="n">3.</span>핵심 기능 — RequestCraft</div>
+    <p>이 기능을 외부(<span className="mono">CraftingUI</span>)에서 쓰려면 <b>RequestCraft(recipeId)</b> 한
+      함수만 알면 됩니다. 내부 동작의 심장부는 다음과 같습니다.</p>
+    <pre>{`public void RequestCraft(string recipeId)
+{
+    var recipe = FindRecipe(recipeId);
+    if (recipe == null) { Publish(Fail); return; }
+
+    `}<span className="c">{`// (Why) 소비 전 검증 → 재료 유실 방지`}</span>{`
+    if (!inventory.HasIngredients(recipe.Ingredients))
+    { Publish(Fail); return; }
+
+    var success = roll() < recipe.SuccessRate;   `}<span className="c">{`// 주입 → 테스트 가능`}</span>{`
+    inventory.Consume(recipe.Ingredients, success ? 1f : .5f);
+    if (success) inventory.Add(recipe.Result);
+
+    Publish(success ? Success : Fail);           `}<span className="c">{`// 이벤트 발행`}</span>{`
+}`}</pre>
+    <div className="dh3">왜 이렇게 구현했나</div>
+    <ul className="why">
+      <li><b>소비 전 검증</b> — 재료를 쓰기 전에 먼저 확인해, 실패해도 유실이 없습니다.</li>
+      <li><b>roll 주입</b> — 확률 판정을 외부에서 주입해 결정론적 단위 테스트가 가능합니다.</li>
+      <li><b>소비율 분기</b> — 성공 100% / 실패 50%로 '실패 페널티' 규칙을 코드로 표현합니다.</li>
+    </ul>
+  </div>
+);
+// 5) 비교 표 + 결정 ★
+const DocCompare = () => (
+  <div className="doc">
+    <div className="dh2"><span className="n">4.</span>고민과 선택 — 결과 전파 방식</div>
+    <p>제작 결과를 UI에 전달하는 방법으로 두 가지를 검토했습니다.</p>
+    <table className="d"><tbody>
+      <tr><th style={{width:'22%'}}>방식</th><th>장점</th><th>단점</th></tr>
+      <tr><td><b>[A] 직접 참조</b></td><td>직관적, 흐름 추적이 쉬움</td><td>강한 결합 — 대상이 늘면 Manager 수정</td></tr>
+      <tr><td><b>[B] 이벤트</b></td><td>느슨한 결합, 확장 용이</td><td>흐름이 코드에 직접 안 보임</td></tr>
+    </tbody></table>
+    <p><span className="tagi">(결정) </span> <b>이벤트 방식(B)</b>을 택했습니다. 결과를 쓸 대상(UI·사운드·통계)이
+      늘어날 것으로 판단해, '흐름 추적이 다소 어려워지는' 단점을 감수하고 <b>확장성</b>을 얻었습니다.</p>
+  </div>
+);
+// 6) 콜아웃 / 노트
+const DocCallout = () => (
+  <div className="doc">
+    <div className="dh2">설계를 관통하는 원칙</div>
+    <p>여러 판단의 바탕에는 하나의 원칙이 있습니다. 이 원칙은 본문 곳곳에서 반복되므로, 강조 박스로 한 번 못박아 둡니다.</p>
+    <div className="callout">
+      <div className="cl">핵심 원칙</div>
+      Manager는 UI를 <b>직접 호출하지 않는다.</b> 결과는 <b>이벤트</b>로 전파한다. — 느슨한 결합(DIP)과 확장 개방(OCP).
+    </div>
+    <p>이 원칙 덕분에 새 소비자(예: 업적·통계 시스템)를 추가해도 <span className="mono">CraftingManager</span> 코드는
+      한 줄도 바뀌지 않습니다.</p>
+  </div>
+);
+// 7) 절차 / 번호 목록
+const DocSteps = () => (
+  <div className="doc">
+    <div className="dh2">사용법 (How-to-Use)</div>
+    <p>크래프팅을 화면에 붙이려면 다음 순서를 따릅니다. 각 단계는 하나의 동작으로 나눴습니다.</p>
+    <ol className="steps">
+      <li><span className="mono">CraftingUI</span>에서 제작 버튼에 <span className="mono">recipeId</span>를 바인딩한다.</li>
+      <li>버튼 클릭 시 <span className="mono">ICraftingService.RequestCraft(recipeId)</span>를 호출한다.</li>
+      <li><span className="mono">OnCraftCompleted</span> 이벤트를 구독해 결과(성공/실패)를 표시한다.</li>
+    </ol>
+    <p><span className="tagi">(예외) </span> 레시피 없음·재료 부족 등은 <b>실패 이벤트</b>로 반환되니, UI에서 성공/실패를
+      함께 처리하면 됩니다.</p>
+  </div>
+);
+// 8) 회고 서술
+const DocRetro = () => (
+  <div className="doc">
+    <div className="dh2"><span className="n">5.</span>결과 및 배운 점</div>
+    <div className="dh3">결과 (데이터로 증명)</div>
+    <p>개요에서 제기한 '결합' 문제를 해소했습니다. 새 레시피를 추가할 때 UI 코드는 <b>0줄</b> 수정했고,
+      확률 경로는 roll 주입으로 <b>테스트 커버리지 100%</b>를 달성했습니다.</p>
+    <div className="dh3">문제 해결 (Troubleshooting)</div>
+    <p>초기에는 실패 시에도 재료가 100% 사라지는 버그가 있었습니다. <span className="mono">success ? 1f : .5f</span>로
+      소비율을 분기해 해결했고, 재사용 시 <b>'상태 분기'</b>의 중요성을 배웠습니다.</p>
+    <div className="dh3">아쉬운 점 · 향후 개선</div>
+    <p>현재 <span className="mono">Recipe</span>가 코드에 하드코딩돼 밸런스 조정 시 재빌드가 필요합니다.
+      다음 단계로 <b>ScriptableObject</b> 기반 데이터로 전환할 계획입니다.</p>
   </div>
 );
 
-// ② 목차
-const Agenda = () => (
-  <div className="slide bg-white p-8">
-    <div className="text-teal-600 tag mb-4">Contents</div>
-    <div className="grid grid-cols-2 gap-x-10 gap-y-3 text-slate-800">
-      {[['1','개요'],['2','시스템 구조'],['3','핵심 기능'],['4','고민과 선택'],['5','결과·회고']].map(([n,t])=>(
-        <div key={n} className="flex items-center gap-3 border-b border-slate-100 pb-2">
-          <span className="mono text-teal-500 font-bold">{n}</span><span>{t}</span>
+// 9) 스크린샷 + 캡션
+const DocScreenshot = () => (
+  <div className="doc">
+    <div className="dh2">제작 UI</div>
+    <p>실제 화면은 다이어그램이 못 보여주는 <b>결과물의 질감</b>을 전합니다. 아래는 인게임 제작 창으로,
+      재료 슬롯과 결과 미리보기를 함께 보여줍니다.</p>
+    <figure>
+      <div className="shot">
+        <div className="st">⚒ 제작 — 돌도끼</div>
+        <div className="row">
+          <div className="slot f"></div><div className="slot f"></div><div className="slot f"></div>
+          <div className="slot f"></div><div className="slot f"></div>
+          <span className="arrow">→</span>
+          <div className="slot f"></div>
+          <button className="btn">제작 (80%)</button>
         </div>
+        <div className="row" style={{gap:'6px'}}>
+          {[...Array(8)].map((_,i)=><div key={i} className="slot" style={{width:'22px',height:'22px'}}></div>)}
+        </div>
+      </div>
+      <figcaption>그림 2. 제작 UI — 재료 5칸 소비 → 돌도끼 1개, 성공 확률 80% 표시</figcaption>
+    </figure>
+    <p>여기서 <b>봐야 할 것</b>은 실패 시에도 재료가 절반만 소비된다는 점입니다. 캡션과 이 한 줄이 없으면
+      독자는 화면에서 무엇이 핵심인지 알 수 없습니다.</p>
+  </div>
+);
+// 10) 기술 스택 표
+const DocStackTable = () => (
+  <div className="doc">
+    <div className="dh2">기술 스택</div>
+    <p>스택은 <b>나열</b>이 아니라 <b>"무엇에 어떻게 썼는지"</b>가 핵심입니다. 별점(★) 대신 경험 열을 채웁니다.</p>
+    <table className="d"><tbody>
+      <tr><th style={{width:'22%'}}>분야</th><th style={{width:'26%'}}>사용 기술</th><th>경험 기반 설명</th></tr>
+      <tr><td>게임 엔진</td><td>Unity 2022.3</td><td>크래프팅·인벤토리 시스템 설계·구현</td></tr>
+      <tr><td>언어</td><td>C# 10</td><td>이벤트·인터페이스(DIP) 기반 모듈화, LINQ 조회</td></tr>
+      <tr><td>아키텍처</td><td>SOLID · 관찰자 패턴</td><td>UI/로직 분리, <span className="mono">OnCraftCompleted</span> 이벤트 전파</td></tr>
+      <tr><td>테스트</td><td>의존성 주입</td><td><span className="mono">Func&lt;float&gt; roll</span> 주입으로 확률 결정론적 테스트</td></tr>
+      <tr><td>형상 관리</td><td>Git</td><td>기능 단위 커밋 · 브랜치 전략</td></tr>
+    </tbody></table>
+  </div>
+);
+// 11) 카드 그리드 (구성요소)
+const DocCardGrid = () => (
+  <div className="doc">
+    <div className="dh2">핵심 구성요소</div>
+    <p>클래스가 많을 때는 문장으로 늘어놓기보다 <b>균등한 카드</b>로 병렬 배치하면 한눈에 스캔됩니다.</p>
+    <div className="cgrid">
+      {[['CraftingManager','제작 총괄 — 검증·판정·소비·이벤트 발행'],
+        ['ICraftingService','제작 계약(인터페이스). UI는 여기에 의존'],
+        ['Recipe','레시피 데이터 — 재료·결과·성공확률'],
+        ['Inventory','재료 보관·검증·소비·추가 (LINQ)'],
+        ['CraftingUI','입력 → 요청, 이벤트 구독 → 표시'],
+        ['CraftingResult','결과 페이로드 — 성공 여부·결과물·사유']].map(([nm,ds])=>(
+        <div key={nm} className="cc"><div className="nm mono">{nm}</div><div className="ds">{ds}</div></div>
+      ))}
+    </div>
+  </div>
+);
+// 12) 트러블슈팅 블록
+const DocTrouble = () => (
+  <div className="doc">
+    <div className="dh2">트러블슈팅 — 실패 시 재료 전량 소실</div>
+    <p>개발 중 마주한 버그를 <b>문제 → 원인 → 해결</b>로 구조화하면, 사고 과정이 그대로 드러납니다.</p>
+    <div className="trb">
+      <div className="r p"><div className="lb">문제</div><div className="bd">제작에 <b>실패</b>해도 재료가 100% 사라져, 실패 페널티(50%) 규칙이 지켜지지 않음.</div></div>
+      <div className="r ca"><div className="lb">원인</div><div className="bd">성공/실패 구분 없이 <span className="mono">Consume(ingredients, 1.0)</span>을 호출하고 있었음.</div></div>
+      <div className="r s"><div className="lb">해결</div><div className="bd"><span className="mono">success ? 1f : .5f</span>로 소비율을 분기하고, <b>roll 주입 단위 테스트</b>로 두 경로를 고정.</div></div>
+    </div>
+    <p><span className="tagi">(배운 점) </span> 재사용·분기 지점에서는 "상태를 어떻게 초기화/구분하는가"가 버그의 핵심임을 확인했습니다.</p>
+  </div>
+);
+// 13) 타임라인 (개발 과정)
+const DocTimeline = () => (
+  <div className="doc">
+    <div className="dh2">개발 과정</div>
+    <p>과정 중심 서술에는 세로 타임라인이 강합니다. 각 단계에 <b>한 줄 성과</b>를 답니다.</p>
+    <div className="tl">
+      {[['06.09','설계','클래스 관계·이벤트 구조 정의 (다이어그램 우선)'],
+        ['06.16','구현','RequestCraft·Inventory·이벤트 발행 완성'],
+        ['06.24','테스트','roll 주입으로 확률 경로 100% 커버'],
+        ['07.02','리팩토링','실패 소비율 버그 수정 · 회고 정리']].map(([d,t,s])=>(
+        <div key={d} className="ti"><div className="d">{d}</div><div className="t"><b>{t}</b> — {s}</div></div>
       ))}
     </div>
   </div>
 );
 
-// ③ 개요 (좌 텍스트 / 우 비주얼)
-const Overview = () => (
-  <div className="slide bg-white p-8">
-    <div className="border-b-2 border-teal-500 inline-block text-xl font-bold pb-1 mb-4">개요</div>
-    <div className="grid grid-cols-5 gap-6">
-      <div className="col-span-3 space-y-3 text-sm">
-        <div><span className="font-bold text-teal-600">What</span> — 재료를 소비해 아이템을 확률 제작</div>
-        <div><span className="font-bold text-teal-600">Why</span> — 제작 로직을 UI와 분리, 이벤트로 결과 전파</div>
-        <div className="text-slate-500">Unity 2022.3 · C# 10 · 2025.06~07</div>
-      </div>
-      <div className="col-span-2 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400 text-xs">
-        스크린샷 / 마일스톤
-      </div>
-    </div>
-  </div>
-);
-
-// ④ 다이어그램 중심 ★
-const DiagramCentric = () => (
-  <div className="slide bg-white p-6 flex flex-col">
-    <div className="text-lg font-bold mb-2">시스템 구조 — 클래스 관계</div>
-    <div className="flex-1 flex items-center justify-center min-h-0">
-      <img src="images/class.png" alt="클래스 다이어그램" className="max-h-full object-contain" />
-    </div>
-    <div className="text-center text-xs text-slate-500 mt-2">▸ CraftingUI가 인터페이스에 의존 = 느슨한 결합 (DIP)</div>
-  </div>
-);
-
-// ⑤ 코드 + 설명 2단
-const CodeExplain = () => (
-  <div className="slide bg-white p-6">
-    <div className="text-lg font-bold mb-3">핵심 기능 — RequestCraft</div>
-    <div className="grid grid-cols-2 gap-4 h-[calc(100%-3rem)]">
-      <pre className="mono text-[10px] leading-relaxed bg-slate-800 text-slate-100 rounded-lg p-4 overflow-hidden">{`if (!inventory
-    .HasIngredients(r.Ingredients))
-  return;
-
-var ok = roll() < r.SuccessRate;
-inventory.Consume(
-  r.Ingredients, ok ? 1f : .5f);
-if (ok) inventory.Add(r.Result);`}</pre>
-      <ul className="text-sm space-y-2 text-slate-700">
-        <li>▸ <b className="text-teal-600">소비 전 검증</b>으로 재료 유실 방지</li>
-        <li>▸ <b className="text-teal-600">roll 주입</b>으로 테스트 가능</li>
-        <li>▸ 성공/실패 <b className="text-teal-600">소비율 분기</b></li>
-      </ul>
-    </div>
-  </div>
-);
-
-// ⑥ 비교 ★
-const Comparison = () => (
-  <div className="slide bg-white p-6 flex flex-col">
-    <div className="text-lg font-bold mb-3">고민과 선택 — 결과 전파 방식</div>
-    <div className="grid grid-cols-2 gap-4 flex-1">
-      <div className="border border-slate-200 rounded-lg p-4">
-        <div className="font-bold mb-2">[A] 직접 참조</div>
-        <div className="text-sm text-slate-600 space-y-1"><div>+ 직관적, 추적 쉬움</div><div>− 강한 결합</div></div>
-      </div>
-      <div className="border-2 border-teal-400 rounded-lg p-4 bg-teal-50/40">
-        <div className="font-bold mb-2 text-teal-700">[B] 이벤트</div>
-        <div className="text-sm text-slate-600 space-y-1"><div>+ 느슨한 결합, 확장 용이</div><div>− 흐름 추적 ↓</div></div>
-      </div>
-    </div>
-    <div className="text-center text-sm mt-3">▸ <b className="text-teal-600">결정: B</b> — 결과를 쓸 대상(UI·사운드·통계)이 늘어남</div>
-  </div>
-);
-
-// ⑦ 타임라인/프로세스
-const Timeline = () => (
-  <div className="slide bg-white p-8 flex flex-col justify-center">
-    <div className="text-lg font-bold mb-6">처리 흐름</div>
-    <div className="flex items-center justify-between">
-      {['요청','검증','판정','결과'].map((s,i)=>(
-        <React.Fragment key={s}>
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 rounded-full bg-teal-500 text-white flex items-center justify-center font-bold">{i+1}</div>
-            <div className="mt-2 text-sm">{s}</div>
-          </div>
-          {i<3 && <div className="flex-1 h-0.5 bg-teal-200 mx-2"></div>}
-        </React.Fragment>
-      ))}
-    </div>
-  </div>
-);
-
-// ⑧ 회고
-const Retro = () => (
-  <div className="slide bg-white p-8">
-    <div className="border-b-2 border-teal-500 inline-block text-xl font-bold pb-1 mb-5">결과 및 배운 점</div>
-    <div className="space-y-3 text-sm">
-      <div><span className="text-teal-600 font-bold">✓ 달성</span> &nbsp; UI/로직 분리, 확률 경로 테스트 100%</div>
-      <div><span className="text-amber-600 font-bold">△ 아쉬움</span> &nbsp; Recipe 하드코딩</div>
-      <div><span className="text-slate-500 font-bold">→ 계획</span> &nbsp; ScriptableObject 데이터로 전환</div>
-    </div>
-  </div>
-);
-
-const LAYOUTS = [
-  { id:1, name:'표지 (Title)', use:'문서의 첫 장. 프로젝트명이 압도적으로 크게, 요소 최소화·중앙 정렬.', star:false, C:Cover },
-  { id:2, name:'목차 (Agenda)', use:'표지 다음 장. 전체 지도를 제공. 번호+짧은 제목, 많으면 2열.', star:false, C:Agenda },
-  { id:3, name:'개요 (Overview)', use:'What/Why 요약. 좌 텍스트·우 비주얼 6:4 분할.', star:false, C:Overview },
-  { id:4, name:'다이어그램 중심', use:'FSM·클래스·시퀀스가 주인공. 그림 크게, 캡션은 한 줄.', star:true, C:DiagramCentric },
-  { id:5, name:'코드 + 설명 2단', use:'핵심 기능. 좌 코드(50줄 이하)·우 "왜" 불릿.', star:false, C:CodeExplain },
-  { id:6, name:'비교 (Trade-off)', use:'대안 A vs B 대칭 배치. 하단에 최종 결정 강조.', star:true, C:Comparison },
-  { id:7, name:'타임라인/프로세스', use:'개발 과정·처리 순서. 단방향, 단계 3~5개.', star:false, C:Timeline },
-  { id:8, name:'회고 (Summary)', use:'결과·아쉬움·계획을 기호(✓ △ →)로 구분.', star:false, C:Retro },
+// ══════════════ 기법 카탈로그 데이터 ══════════════
+const PATTERNS = [
+  { id:1, name:'문서 헤더', tag:'Header', star:false, C:DocHeader,
+    when:'문서의 첫머리 — 무엇에 대한 문서인지',
+    how:'제목을 크게, 부제 한 줄, 메타(작성자·기간·스택·링크)를 표로 정렬',
+    why:'독자가 3초 안에 "무엇을·누가·언제"를 파악한다',
+    note:'여기에 본문 요약까지 넣지 말 것 — 그건 개요의 몫' },
+  { id:2, name:'개요 섹션 (본문 + 요약표)', tag:'Overview', star:false, C:DocOverview,
+    when:'문서 도입 — What/Why와 범위',
+    how:'문제 → 해결 순서의 짧은 문단 + 핵심 정보 요약표',
+    why:'배경지식 없는 독자를 "같은 출발선"에 세운다',
+    note:'기술 나열만 하지 말 것 — "왜"가 빠지면 개요가 아니다' },
+  { id:3, name:'본문 + 다이어그램 + 캡션', tag:'Body + Figure', star:true, C:DocDiagram,
+    when:'구조·흐름 설명 (시퀀스·클래스·FSM)',
+    how:'설명 문단 → 다이어그램 → 캡션 → 해석 문단. 그림은 본문 폭에 맞추고 캡션을 단다',
+    why:'그림이 관계·흐름을 문장보다 빠르게 전달하고, 캡션이 "이 그림에서 볼 것"을 짚는다',
+    note:'캡션 없이 그림만 던지지 말 것 — 문단과 그림을 잇는 한 줄이 필요' },
+  { id:4, name:'코드 + 설명', tag:'Code + Why', star:true, C:DocCode,
+    when:'핵심 로직의 구현 증명',
+    how:'사용법 문단 → 코드 블록(핵심만) → "왜"를 바로 아래 문단·불릿으로',
+    why:'코드와 "왜"가 붙어야 "내 코드를 설명할 줄 안다"가 증명된다',
+    note:'500줄을 통째로 붙여넣지 말 것 — 심장부만 선별' },
+  { id:5, name:'비교 표 + 결정', tag:'Trade-off', star:true, C:DocCompare,
+    when:'대안 비교·판단 근거',
+    how:'방식 × 장단점 표 + 아래에 "결정"과 이유 문단',
+    why:'표는 대안을 한눈에, 결정 문단이 "판단"을 드러낸다 — 면접관이 보는 지점',
+    note:'표만 두고 "결정"을 빼먹지 말 것' },
+  { id:6, name:'콜아웃 / 노트 박스', tag:'Callout', star:false, C:DocCallout,
+    when:'본문 중 핵심 원칙·주의를 각인',
+    how:'문단 흐름 사이에 강조 박스 하나, 좌측 컬러 보더로 분리',
+    why:'중요한 한 줄이 문단에 묻히지 않게 한다',
+    note:'남발 금지 — 한 섹션에 하나면 충분' },
+  { id:7, name:'절차 / 번호 목록', tag:'Steps', star:false, C:DocSteps,
+    when:'사용법·순서가 있는 정보',
+    how:'번호 목록으로 단계화, 한 단계에 한 동작',
+    why:'순서가 명확해 그대로 따라 할 수 있다',
+    note:'한 단계에 여러 동작을 몰아넣지 말 것' },
+  { id:8, name:'회고 서술', tag:'Retrospective', star:false, C:DocRetro,
+    when:'결과·배운 점 마무리',
+    how:'결과(수치 문장) → 문제 해결 서사 → 기술 부채·개선 문단',
+    why:'데이터로 증명하고 한계까지 쓰면 "성장 가능성"이 보인다',
+    note:'"빨라졌다" 대신 수치로, "완벽했다"로 끝내지 말 것' },
+  { id:9, name:'스크린샷 + 캡션', tag:'Screenshot', star:false, C:DocScreenshot,
+    when:'실제 결과물(게임·앱 화면)을 보여줄 때',
+    how:'화면 이미지 + 캡션(그림 N.) + "여기서 볼 것" 한 줄 설명',
+    why:'다이어그램이 못 주는 "결과물의 질감"을 전한다 — 포트폴리오의 증거',
+    note:'화질·크롭에 주의, 캡션 없이 이미지만 던지지 말 것' },
+  { id:10, name:'기술 스택 표', tag:'Stack matrix', star:false, C:DocStackTable,
+    when:'사용 기술·스펙을 정리할 때',
+    how:'분야 × 사용 기술 × "경험 기반 설명" 다열 표',
+    why:'"무엇에 어떻게 썼는지"가 드러난다 — 나열보다 강하다',
+    note:'점수화(★·상중하)는 금지, "경험" 열이 핵심' },
+  { id:11, name:'카드 그리드 (구성요소)', tag:'Card grid', star:false, C:DocCardGrid,
+    when:'병렬 항목(구성요소·기능·특징) 나열',
+    how:'균등한 카드 2~4열, 각 카드 = 이름 + 한 줄',
+    why:'대등한 정보를 스캔하기 쉽고, 정렬이 "정돈됨" 인상을 준다',
+    note:'카드마다 정보량을 비슷하게 (들쭉날쭉 금지)' },
+  { id:12, name:'트러블슈팅 블록', tag:'Troubleshooting', star:false, C:DocTrouble,
+    when:'버그·난관과 그 해결을 보여줄 때',
+    how:'문제 → 원인 → 해결(코드)로 라벨을 붙여 구조화',
+    why:'"원인 분석"이 드러나야 문제 해결력이 증명된다 — 지망생의 최대 무기',
+    note:'"고쳤다"로 끝내지 말 것 — 원인을 반드시 명시' },
+  { id:13, name:'타임라인 (개발 과정)', tag:'Timeline', star:false, C:DocTimeline,
+    when:'개발 과정·마일스톤을 시간순으로',
+    how:'세로 타임라인, 단계 4~6개, 각 단계에 한 줄 성과',
+    why:'과정과 성장의 궤적을 한눈에 보여준다',
+    note:'단계마다 "무엇을 했다"가 아니라 "무엇을 이뤘다"를' },
 ];
 
-const App = () => (
-  <div className="max-w-5xl mx-auto px-6 py-12">
-    <header className="mb-12">
-      <div className="tag text-teal-600 mb-2">Layout Showcase · Part 3</div>
-      <h1 className="text-3xl font-extrabold tracking-tight">레이아웃 실물 예시</h1>
-      <p className="text-slate-600 mt-3 max-w-2xl">
-        Part 3에서 다룬 8가지 레이아웃을 <b>실제 렌더링</b>으로 봅니다.
-        ASCII 와이어프레임이 '설계도'라면, 아래는 '완성 실물'입니다.
-        모두 관통 예제인 <b className="text-teal-600">크래프팅 시스템</b> 내용으로 채웠습니다.
-        <span className="text-teal-600 font-bold"> ★</span>는 다이어그램이 가장 잘 사는 레이아웃.
-      </p>
-    </header>
+// ══════════════ 복붙용 예시 프롬프트 (한글, 역할+맥락+제약+형식 · [대괄호]만 교체) ══════════════
+const PROMPTS = {
+  1: `너는 기술 문서 편집자야. 내 프로젝트 기술 문서의 '표지·헤더'를 만들어줘.
+- 프로젝트명: [프로젝트명]
+- 한 줄 소개: [무엇을 하는 프로젝트인지]
+- 메타: 작성자 [이름] · 기간 [기간] · 기술 [스택] · 링크 [GitHub·시연]
+제목(H1)을 가장 크게, 부제 한 줄, 그 아래 메타 정보를 표로 정리해줘.
+본문 요약은 넣지 말고, Markdown으로만 답해줘.`,
+  2: `너는 기술 문서 편집자야. 내 프로젝트 '[프로젝트명]'의 '개요' 섹션을 써줘.
+아래를 문제→해결 순서의 짧은 문단으로 풀어줘.
+- (문제) [기존에 무엇이 불편·비효율이었는지]
+- (해결) [그래서 무엇을 만들었는지]
+- (범위) [이 문서가 다루는 범위]
+그 아래 핵심 정보(핵심 규칙·환경 등)를 표로 정리해줘.
+'왜 만들었는지'가 반드시 드러나게. Markdown으로 답해줘.`,
+  3: `너는 기술 문서 편집자야. '[설명할 대상: 예) 처리 흐름 / 시스템 구조]'를 다이어그램으로 설명하는 섹션을 만들어줘.
+① 흐름을 소개하는 문단 1개
+② Mermaid [시퀀스 / 클래스 / 상태] 다이어그램 코드 블록 (참여자·구성요소: [나열])
+③ '그림 1. [캡션]' 형식의 캡션
+④ '이 그림에서 핵심은 [무엇]'을 짚는 해석 문단 1개
+Markdown(mermaid 코드 블록 포함)으로 답해줘.`,
+  4: `너는 기술 문서 편집자야. '[기능명]'의 핵심 코드를 설명하는 섹션을 만들어줘.
+① 외부에서 어떻게 호출하는지(사용법) 문단 1개
+② 핵심 코드 스니펫 (전체가 아니라 핵심만)
+③ '왜 이렇게 했는지' 불릿 2~3개
+코드: [내 코드 스니펫 붙여넣기]
+Markdown으로 답해줘.`,
+  5: `너는 기술 문서 편집자야. '[고민 주제: 예) 데이터 저장 방식]'에 대한 '고민과 선택' 섹션을 만들어줘.
+대안 [A]와 [B]를 '방식 · 장점 · 단점' 표로 대칭 정리하고,
+표 아래에 '결정: [선택]'과 이유를 한 문단으로 강조해줘.
+이유에는 '[어떤 단점]을 감수하고 [어떤 장점]을 택했다'는 트레이드오프가 드러나게.
+Markdown으로 답해줘.`,
+  6: `너는 기술 문서 편집자야. 본문 중간에 넣을 '핵심 원칙' 강조 박스를 만들어줘.
+원칙: '[한 문장 원칙]'
+① 이 원칙이 왜 중요한지 짧은 문단 1개
+② 인용 박스(Markdown '>' 인용문)로 원칙 한 줄
+③ 이 원칙 덕분에 무엇이 좋아지는지 문단 1개
+강조는 한 섹션에 하나만. Markdown으로 답해줘.`,
+  7: `너는 기술 문서 편집자야. '[기능]'의 사용법을 번호 목록으로 정리해줘.
+① 짧은 소개 문단 1개
+② [3~5]단계 번호 목록 (각 단계는 하나의 동작만): [단계들 나열]
+③ 예외·주의사항 한 문단
+Markdown으로 답해줘.`,
+  8: `너는 기술 문서 편집자야. 프로젝트 '결과 및 배운 점' 섹션을 만들어줘. 세 소제목으로:
+① 결과 — [before→after 수치]로 증명
+② 문제 해결 — [겪은 버그]의 [원인·해결]
+③ 아쉬운 점·개선 — [기술 부채]와 [다음 계획]
+'빨라졌다' 같은 감상 대신 수치로, '완벽했다'로 끝내지 말 것. Markdown으로 답해줘.`,
+  9: `너는 기술 문서 편집자야. 실제 화면(스크린샷)을 넣는 문서 섹션을 만들어줘.
+① 이 화면이 무엇인지 문단 1개
+② 이미지: ![캡션](이미지경로)
+③ '그림 N. [무엇을 보여주는지]' 캡션
+④ '이 화면에서 봐야 할 것은 [핵심]' 문단 1개
+대상 화면: [설명]. Markdown으로 답해줘.`,
+  10: `너는 기술 문서 편집자야. '기술 스택' 섹션을 표로 만들어줘.
+열은 '분야 · 사용 기술 · 경험 기반 설명' 3개.
+점수화(★·상중하)는 절대 쓰지 말고, '경험 기반 설명'에 [무엇에 어떻게 썼는지]를 구체적으로.
+내 스택: [분야:기술:경험 목록]
+Markdown 표로 답해줘.`,
+  11: `너는 기술 문서 편집자야. 핵심 구성요소(클래스·모듈)를 한눈에 보는 목록을 만들어줘.
+각 항목은 '이름 — 한 줄 역할' 형식으로, 정보량을 비슷하게 맞춰줘.
+구성요소: [이름:역할 목록]
+Markdown 표로 답해줘.`,
+  12: `너는 기술 문서 편집자야. 개발 중 겪은 버그를 '문제 → 원인 → 해결' 구조로 정리해줘.
+- 문제: [증상]
+- 원인: [근본 원인]
+- 해결: [해결 방법과 코드]
+'고쳤다'로 끝내지 말고 원인 분석이 드러나게, 마지막에 '배운 점' 한 줄.
+Markdown으로 답해줘.`,
+  13: `너는 기술 문서 편집자야. 개발 과정을 시간순 타임라인으로 정리해줘.
+[4~6]개 단계, 각 단계는 '날짜 — 단계명 — 한 줄 성과' 형식.
+'무엇을 했다'가 아니라 '무엇을 이뤘다'로.
+단계: [날짜:단계:성과 목록]
+Markdown(목록 또는 표)으로 답해줘.`,
+};
 
-    <div className="space-y-16">
-      {LAYOUTS.map(({id,name,use,star,C})=>(
-        <section key={id} className="scroll-mt-8">
-          <div className="flex items-baseline gap-3 mb-4">
-            <span className="mono text-2xl font-bold text-teal-500">{String(id).padStart(2,'0')}</span>
-            <h2 className="text-xl font-bold">{name}</h2>
-            {star && <span className="text-teal-600 font-bold">★</span>}
-          </div>
-          <p className="text-sm text-slate-600 mb-4">{use}</p>
-          <C />
-        </section>
+const PromptBox = ({prompt}) => {
+  const [copied, setCopied] = React.useState(false);
+  const copy = () => {
+    const done = () => { setCopied(true); setTimeout(()=>setCopied(false), 1500); };
+    const fallback = () => {
+      const ta = document.createElement('textarea'); ta.value = prompt;
+      ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch(e) {}
+      document.body.removeChild(ta);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(prompt).then(done).catch(fallback);
+    } else { fallback(); }
+  };
+  return (
+    <div className="pbox">
+      <div className="ph">
+        <span className="lbl">💬 이 패턴 만들기 — 예시 프롬프트 ([대괄호]만 내 것으로 교체)</span>
+        <button onClick={copy}>{copied ? '복사됨 ✓' : '복사'}</button>
+      </div>
+      <div className="pb">{prompt}</div>
+    </div>
+  );
+};
+
+// ══════════════ 렌더 ══════════════
+const Block = ({label, children}) => (
+  <div>
+    <div className="tag text-brand-600 mb-1">{label}</div>
+    <div className="text-sm text-slate-700 leading-relaxed">{children}</div>
+  </div>
+);
+const PatternSection = ({id, name, tag, star, when, how, why, note, C}) => (
+  <section id={`p${id}`} className="scroll-mt-6">
+    <div className="flex items-baseline gap-3 mb-3">
+      <span className="mono text-2xl font-bold text-brand-500">{String(id).padStart(2,'0')}</span>
+      <h2 className="text-xl font-bold">{name}</h2>
+      {star && <span className="text-brand-600 font-bold" title="다이어그램이 가장 잘 사는 패턴">★</span>}
+      <span className="tag text-slate-400 ml-auto">{tag}</span>
+    </div>
+    <div className="grid md:grid-cols-3 gap-5 mb-3">
+      <Block label="이럴 때">{when}</Block>
+      <Block label="이렇게 배치">{how}</Block>
+      <Block label="왜">{why}</Block>
+    </div>
+    {note && <div className="text-sm text-slate-500 mb-4">👎 <b className="text-slate-600">주의</b> — {note}</div>}
+    <C />
+    <PromptBox prompt={PROMPTS[id]} />
+  </section>
+);
+const Matcher = () => (
+  <div className="rounded-2xl border border-slate-200 bg-white p-6 mb-14">
+    <div className="tag text-brand-600 mb-1">전달할 정보 → 추천 패턴</div>
+    <p className="text-sm text-slate-500 mb-4">무엇을 전달할지 정하면 레이아웃이 정해집니다. 클릭하면 해당 패턴으로 이동합니다.</p>
+    <div className="grid md:grid-cols-2 gap-x-10">
+      {[['무엇에 대한 문서인지 알린다',1,'문서 헤더'],['What/Why·범위를 연다',2,'개요 섹션'],
+        ['구조·흐름을 보인다',3,'본문 + 다이어그램 ★'],['구현을 증명한다',4,'코드 + 설명 ★'],
+        ['판단 근거를 든다',5,'비교 표 ★'],['핵심 원칙을 각인한다',6,'콜아웃 / 노트'],
+        ['사용법·순서를 안내한다',7,'절차 / 번호 목록'],['결과·배운 점을 정리한다',8,'회고 서술'],
+        ['결과물 화면을 보여준다',9,'스크린샷 + 캡션'],['사용 기술을 정리한다',10,'기술 스택 표'],
+        ['구성요소를 나열한다',11,'카드 그리드'],['버그 해결을 보여준다',12,'트러블슈팅 블록'],
+        ['개발 과정을 보여준다',13,'타임라인']].map(([p,i,t])=>(
+        <a key={i} href={`#p${i}`} className="flex items-center justify-between gap-3 py-2.5 border-b border-slate-100 hover:text-brand-600 transition-colors">
+          <span className="text-sm text-slate-700">{p}</span>
+          <span className="text-sm font-bold text-brand-500 whitespace-nowrap">{t} →</span>
+        </a>
       ))}
     </div>
-
+  </div>
+);
+const App = () => (
+  <div className="max-w-3xl mx-auto px-6 py-12">
+    <header className="mb-10">
+      <div className="tag text-brand-600 mb-2">Document Layout Patterns · Part 3</div>
+      <h1 className="text-3xl font-extrabold tracking-tight">기술 문서 레이아웃 패턴</h1>
+      <p className="text-slate-600 mt-3 leading-relaxed">
+        발표 슬라이드가 아니라, <b>사람이 읽는 기술 문서·포트폴리오</b>를 어떻게 배치하는지 정리했습니다.
+        <b className="text-brand-600"> 타이틀 · 본문 문단 · 시각자료</b>를 어떻게 엮어 "읽히는 문서"를 만드는지,
+        각 패턴을 <b className="text-brand-600">이럴 때 → 이렇게 → 왜</b>로 풀고 실제 문서 예시로 보여줍니다.
+        예시는 관통 예제인 <b className="text-brand-600">크래프팅 시스템</b>, 다이어그램은 <b>Mermaid로 실시간 렌더링</b>됩니다.
+        <span className="text-brand-600 font-bold"> ★</span>는 다이어그램이 가장 잘 사는 패턴.
+      </p>
+      <div className="mt-5 rounded-xl border border-brand-200 bg-brand-50 px-5 py-4">
+        <div className="tag text-brand-600 mb-2">💡 AI와 함께 쓰는 법</div>
+        <ul className="space-y-2 text-sm text-slate-700 leading-relaxed">
+          <li>▸ 만들고 싶은 패턴의 <b className="text-brand-700">스크린샷을 첨부</b>하고, 아래 <b className="text-brand-700">예시 프롬프트에 본인의 생각·맥락을 더한</b> 디테일한 프롬프트로 문서를 만드는 걸 추천합니다.</li>
+          <li>▸ <b className="text-brand-700">프론트엔드 코드가 가능한 생성형 AI</b>를 쓴다면, <b className="text-brand-700">React·Mermaid를 적극 활용</b>하라고 <b>시스템 프롬프트</b>에 입력하고 진행하길 추천합니다.</li>
+        </ul>
+      </div>
+    </header>
+    <Matcher />
+    <div className="space-y-16">
+      {PATTERNS.map(p => <PatternSection key={p.id} {...p} />)}
+    </div>
     <footer className="mt-20 pt-8 border-t border-slate-200 text-sm text-slate-500">
-      <p>이 페이지는 단일 HTML 파일(React CDN + Tailwind CDN)로 만들어졌습니다.
-      브라우저로 바로 열리고, 파일 하나만 올리면 github.io에 배포됩니다.</p>
-      <p className="mt-2">더 깊이: 익숙해지면 <span className="mono">npm</span> 기반 정식 React 프로젝트(Vite 등)로
-      확장해 보세요 — 그 과정 자체가 좋은 포트폴리오 소재가 됩니다.</p>
+      <p>이 페이지는 단일 HTML 파일(React CDN + Tailwind CDN + Mermaid CDN)로 만들어졌습니다.
+      다이어그램은 <span className="mono">Mermaid</span> 코드에서 실시간으로 그려져, 이미지가 깨질 일이 없습니다.</p>
+      <p className="mt-2">더 깊이: 익숙해지면 <span className="mono">npm</span> 기반 정식 프로젝트(Vite 등)로 확장해 보세요.</p>
     </footer>
   </div>
 );
-
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 </script>
 </body>
