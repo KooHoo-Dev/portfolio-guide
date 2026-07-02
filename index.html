@@ -8,37 +8,37 @@
 <style>
   @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
   :root {
-    --ink:#1f2328; --paper:#ffffff; --teal:#0d9488; --tealSoft:#ccfbf1;
-    --line:#e5e7eb; --slate:#1e293b; --muted:#64748b;
+    --ink:#20233A; --paper:#ffffff; --indigo:#5B6AD0; --indigo-deep:#3E4CAB; --indigo-soft:#EDEFFB;
+    --line:#E7E9F4; --slate:#1e293b; --muted:#71768F;
   }
   * { margin:0; padding:0; box-sizing:border-box; font-family:'Pretendard', -apple-system, sans-serif; }
   .mono { font-family:'JetBrains Mono','D2Coding',monospace; }
   body { background:#f8fafc; color:var(--slate); line-height:1.6; }
   .wrap { max-width:900px; margin:0 auto; padding:64px 24px 80px; }
   header { margin-bottom:48px; }
-  .tag { font-size:12px; letter-spacing:.1em; text-transform:uppercase; font-weight:700; color:var(--teal); }
+  .tag { font-size:12px; letter-spacing:.1em; text-transform:uppercase; font-weight:700; color:var(--indigo); }
   h1 { font-size:34px; font-weight:800; letter-spacing:-.02em; margin-top:8px; color:#0f172a; }
   .lead { color:var(--muted); margin-top:14px; max-width:620px; }
-  .quote { margin-top:20px; padding:14px 18px; background:var(--tealSoft); border-radius:10px;
-           color:#115e59; font-weight:600; font-size:15px; }
+  .quote { margin-top:20px; padding:14px 18px; background:var(--indigo-soft); border-radius:10px;
+           color:var(--indigo-deep); font-weight:600; font-size:15px; }
   .cards { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; margin-top:8px; }
   @media (max-width:640px){ .cards { grid-template-columns:1fr; } }
   .card { display:block; background:var(--paper); border:1px solid var(--line); border-radius:14px;
           padding:24px; text-decoration:none; color:inherit; transition:transform .12s, box-shadow .12s, border-color .12s; }
-  .card:hover { transform:translateY(-3px); box-shadow:0 12px 28px -14px rgba(0,0,0,.22); border-color:var(--teal); }
-  .card .num { font-size:22px; font-weight:800; color:var(--teal); }
+  .card:hover { transform:translateY(-3px); box-shadow:0 12px 28px -14px rgba(0,0,0,.22); border-color:var(--indigo); }
+  .card .num { font-size:22px; font-weight:800; color:var(--indigo); }
   .card h2 { font-size:18px; font-weight:700; margin-top:6px; color:#0f172a; }
   .card p { font-size:14px; color:var(--muted); margin-top:6px; }
-  .card .go { display:inline-block; margin-top:14px; font-size:13px; font-weight:700; color:var(--teal); }
+  .card .go { display:inline-block; margin-top:14px; font-size:13px; font-weight:700; color:var(--indigo); }
   .sub { display:flex; gap:12px; flex-wrap:wrap; margin-top:14px; }
   .sub a { font-size:13px; color:var(--muted); text-decoration:none; border:1px solid var(--line);
            border-radius:8px; padding:6px 12px; background:var(--paper); transition:border-color .12s,color .12s; }
-  .sub a:hover { border-color:var(--teal); color:var(--teal); }
+  .sub a:hover { border-color:var(--indigo); color:var(--indigo); }
   section.block { margin-top:40px; }
   section.block > .tag { display:block; margin-bottom:16px; }
   footer { margin-top:64px; padding-top:24px; border-top:1px solid var(--line);
            font-size:13px; color:var(--muted); }
-  footer a { color:var(--teal); text-decoration:none; }
+  footer a { color:var(--indigo); text-decoration:none; }
 </style>
 </head>
 <body>
@@ -57,36 +57,19 @@
   <section class="block">
     <span class="tag">바로 보기</span>
     <div class="cards">
-      <a class="card" href="showcase/index.html">
-        <div class="num">01</div>
-        <h2>레이아웃 기법 카탈로그</h2>
-        <p>정보를 전달할 때 쓰는 레이아웃 기법 11종을 "이럴 때 → 이렇게 → 왜 + 실물 예시"로 소개합니다.</p>
-        <span class="go">열기 →</span>
-      </a>
       <a class="card" href="slides/deck.html">
-        <div class="num">02</div>
-        <h2>발표 덱 (강의용)</h2>
-        <p>가이드 핵심을 담은 인터랙티브 슬라이드 덱. 방향키(← →)로 넘겨 봅니다.</p>
+        <div class="num">01</div>
+        <h2>가이드 문서</h2>
+        <p>발표·복습 겸용 가이드 본문. 방향키(← →)로 넘겨 보고, '복습본'으로 인쇄·PDF 저장도 됩니다.</p>
         <span class="go">열기 →</span>
-        <div class="sub"><a href="slides/presentation.pdf">Marp PDF (백업)</a></div>
+      </a>
+      <a class="card" href="showcase/index.html">
+        <div class="num">02</div>
+        <h2>레이아웃 기법 카탈로그</h2>
+        <p>기술 문서를 배치하는 문서 레이아웃 패턴 13종을 "이럴 때 → 이렇게 → 왜 + 실물 예시 + 복붙 프롬프트"로 소개합니다.</p>
+        <span class="go">열기 →</span>
       </a>
     </div>
-  </section>
-
-  <section class="block">
-    <span class="tag">가이드 본문 (Part 0~6)</span>
-    <div class="sub">
-      <a href="https://github.com/KooHoo-Dev/portfolio-guide/blob/main/src/00-orientation.md">0 · 오리엔테이션</a>
-      <a href="https://github.com/KooHoo-Dev/portfolio-guide/blob/main/src/01-job-documents.md">1 · 취업 문서</a>
-      <a href="https://github.com/KooHoo-Dev/portfolio-guide/blob/main/src/02-tech-documents.md">2 · 기술 문서</a>
-      <a href="https://github.com/KooHoo-Dev/portfolio-guide/blob/main/src/03-presentation-layouts.md">3 · 레이아웃</a>
-      <a href="https://github.com/KooHoo-Dev/portfolio-guide/blob/main/src/04-mermaid-diagrams.md">4 · 다이어그램</a>
-      <a href="https://github.com/KooHoo-Dev/portfolio-guide/blob/main/src/05-ai-workflow.md">5 · AI 워크플로우</a>
-      <a href="https://github.com/KooHoo-Dev/portfolio-guide/blob/main/src/06-prompts.md">6 · 프롬프트</a>
-    </div>
-    <p class="lead" style="font-size:13px; margin-top:12px;">
-      본문 Markdown은 GitHub에서 Mermaid 다이어그램이 네이티브로 렌더링됩니다.
-    </p>
   </section>
 
   <footer>
