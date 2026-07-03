@@ -23,6 +23,7 @@
 이 가이드는 **하나의 Markdown 소스**에서 두 형태로 나온다.
 
 - **읽기용 가이드** — `src/`의 `.md` 문서. GitHub에서 Mermaid가 네이티브 렌더링된다.
+  배포 사이트에서는 **`guide.html`(온사이트 리더)** 로 Part 0~6을 바로 읽을 수 있다(marked + mermaid + hljs).
 - **발표·배포용**
   - **발표 덱 (강의용)** — `slides/deck.html` (단일 HTML + React CDN, 방향키로 넘기는 인터랙티브 덱)
   - **레이아웃 패턴 카탈로그** — `showcase/index.html` (문서 레이아웃 패턴 13종 · 라이브 Mermaid · 복붙 프롬프트)
@@ -33,6 +34,7 @@
 ```
 portfolio-guide-v2/
 ├── index.html           # 허브 랜딩 (Pages 진입점)
+├── guide.html           # 온사이트 리더 (src/*.md를 브라우저에서 렌더)
 ├── src/                 # Part 0~6 가이드 본문 (Markdown)
 ├── assets/diagrams/     # Mermaid 다이어그램 (PNG + mmd 소스)
 ├── slides/              # 발표 덱: deck.html(현행 React) + Marp 백업
@@ -55,7 +57,8 @@ portfolio-guide-v2/
 
 ## 사용법
 
-**가이드 읽기** — `src/`의 `.md` 파일을 GitHub에서 순서대로 읽으면 된다.
+**가이드 읽기** — `src/`의 `.md` 파일을 GitHub에서 순서대로 읽거나, 배포 사이트의 **`guide.html`**
+(허브 → "가이드 본문")에서 Part 0~6을 브라우저로 바로 읽으면 된다(다이어그램 실시간 렌더).
 
 **발표 덱 (강의용)** — `slides/deck.html`을 브라우저로 열면 된다(CDN 방식, 빌드 불필요). ← → 로 이동.
 

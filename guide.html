@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>가이드 본문 · 유니티 개발자 취업·기술 문서 작성 가이드</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/styles/github-dark.min.css" />
+<style>
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+  :root{
+    --ink:#20233A; --muted:#71768F; --faint:#9AA0B8; --line:#E7E9F4; --paper:#fff; --bg:#F6F7FC;
+    --indigo:#5B6AD0; --indigo-deep:#3E4CAB; --indigo-soft:#EDEFFB; --indigo-mid:#8B95E4;
+    --sans:'Pretendard','Noto Sans KR',-apple-system,sans-serif; --mono:'JetBrains Mono','D2Coding',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.7;}
+  a{color:var(--indigo-deep);}
+  /* ── 레이아웃: 사이드바 + 본문 ── */
+  .app{display:grid;grid-template-columns:280px minmax(0,1fr);min-height:100vh;}
+  .side{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;
+        background:var(--paper);border-right:1px solid var(--line);padding:26px 20px;}
+  .side .brand{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--indigo);}
+  .side h1{font-size:18px;font-weight:800;margin:6px 0 2px;letter-spacing:-.01em;}
+  .side .hub{display:inline-block;margin-top:2px;font-size:13px;color:var(--muted);text-decoration:none;}
+  .side .hub:hover{color:var(--indigo);}
+  .nav{margin-top:22px;display:flex;flex-direction:column;gap:4px;}
+  .nav a{display:block;padding:9px 13px;border-radius:9px;font-size:14.5px;font-weight:600;
+         color:var(--ink);text-decoration:none;transition:background .12s,color .12s;}
+  .nav a:hover{background:var(--indigo-soft);}
+  .nav a.active{background:var(--indigo);color:#fff;}
+  .side .foot{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--faint);line-height:1.6;}
+  .main{padding:52px 56px 96px;}
+  .wrap{max-width:820px;margin:0 auto;}
+  /* ── 렌더된 마크다운 ── */
+  .md h1{font-size:32px;font-weight:800;letter-spacing:-.02em;margin:8px 0 18px;line-height:1.25;}
+  .md h2{font-size:24px;font-weight:800;margin:38px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--indigo-soft);letter-spacing:-.01em;}
+  .md h3{font-size:19px;font-weight:800;color:var(--indigo-deep);margin:26px 0 8px;}
+  .md h4{font-size:16px;font-weight:800;margin:20px 0 6px;}
+  .md p{margin:11px 0;font-size:16px;color:#2f3345;word-break:keep-all;}
+  .md ul,.md ol{margin:11px 0;padding-left:24px;}
+  .md li{margin:6px 0;font-size:16px;color:#2f3345;word-break:keep-all;}
+  .md li::marker{color:var(--indigo-mid);}
+  .md strong{color:var(--indigo-deep);font-weight:700;}
+  .md em{color:var(--muted);font-style:normal;}
+  .md a{text-decoration:underline;text-underline-offset:2px;}
+  .md hr{border:0;border-top:1px solid var(--line);margin:30px 0;}
+  .md blockquote{margin:16px 0;padding:12px 18px;background:var(--indigo-soft);
+                 border-left:4px solid var(--indigo);border-radius:0 10px 10px 0;color:var(--indigo-deep);}
+  .md blockquote p{color:var(--indigo-deep);margin:6px 0;}
+  .md blockquote strong{color:var(--indigo-deep);}
+  .md :not(pre)>code{font-family:var(--mono);font-size:.86em;background:var(--indigo-soft);
+                     color:var(--indigo-deep);padding:2px 6px;border-radius:5px;word-break:break-all;}
+  .md pre{margin:14px 0;border-radius:12px;overflow:auto;background:#1E2138;}
+  .md pre code{font-family:var(--mono);font-size:13.5px;line-height:1.6;display:block;padding:16px 18px;background:transparent;}
+  .md table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14.5px;display:block;overflow-x:auto;}
+  .md thead th{background:var(--indigo);color:#fff;font-weight:700;text-align:left;padding:9px 13px;white-space:nowrap;}
+  .md tbody td{padding:9px 13px;border-top:1px solid var(--line);vertical-align:top;color:#2f3345;}
+  .md tbody tr:nth-child(even) td{background:#F7F8FD;}
+  .md img{display:block;max-width:100%;margin:16px auto;border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px;}
+  .md .mermaid{display:flex;justify-content:center;margin:18px 0;}
+  .md .mermaid svg{max-width:100%;height:auto;}
+  .loading{color:var(--faint);font-size:15px;padding:40px 0;}
+  /* ── 반응형 ── */
+  @media (max-width:820px){
+    .app{grid-template-columns:1fr;}
+    .side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:18px 20px;}
+    .nav{flex-direction:row;flex-wrap:wrap;margin-top:14px;}
+    .nav a{padding:7px 11px;font-size:13px;}
+    .side .foot{display:none;}
+    .main{padding:28px 22px 72px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand">Career &amp; Tech-Doc Guide · v2</div>
+    <h1>가이드 본문</h1>
+    <a class="hub" href="index.html">← 허브로</a>
+    <nav class="nav" id="nav"></nav>
+    <div class="foot">읽기용 원문(Part 0~6). 다이어그램은 Mermaid로 실시간 렌더링됩니다.<br/>저자: 김재훈 (Jay / KooHoo)</div>
+  </aside>
+  <main class="main">
+    <div class="wrap"><article class="md" id="content"><div class="loading">불러오는 중…</div></article></div>
+  </main>
+</div>
+
+<script>
+const PARTS = [
+  { n:0, file:'src/00-orientation.md',        title:'0 · 오리엔테이션' },
+  { n:1, file:'src/01-job-documents.md',      title:'1 · 취업 문서 작성 가이드' },
+  { n:2, file:'src/02-tech-documents.md',     title:'2 · 기술 문서 작성 가이드' },
+  { n:3, file:'src/03-presentation-layouts.md', title:'3 · 프레젠테이션 레이아웃' },
+  { n:4, file:'src/04-mermaid-diagrams.md',   title:'4 · Mermaid 다이어그램' },
+  { n:5, file:'src/05-ai-workflow.md',        title:'5 · AI 활용 워크플로우' },
+  { n:6, file:'src/06-prompts.md',            title:'6 · 좋은 레이아웃 프롬프트' },
+];
+
+try { mermaid.initialize({ startOnLoad:false, theme:'default', securityLevel:'loose', fontFamily:'Pretendard, sans-serif' }); } catch(e){}
+try { marked.setOptions({ gfm:true, breaks:false }); } catch(e){}
+
+const content = document.getElementById('content');
+const nav = document.getElementById('nav');
+
+// 사이드바 내비 렌더
+PARTS.forEach(p => {
+  const a = document.createElement('a');
+  a.href = '#' + p.n; a.textContent = p.title; a.dataset.n = p.n;
+  nav.appendChild(a);
+});
+
+function setActive(n){
+  nav.querySelectorAll('a').forEach(a => a.classList.toggle('active', +a.dataset.n === n));
+}
+
+let mmId = 0;
+async function renderPart(n){
+  const part = PARTS[n] || PARTS[0];
+  setActive(part.n);
+  content.innerHTML = '<div class="loading">불러오는 중…</div>';
+  let md;
+  try {
+    const res = await fetch(part.file, { cache:'no-cache' });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    md = await res.text();
+  } catch(e){
+    content.innerHTML = '<p style="color:#C0392B">문서를 불러오지 못했습니다 (' + e.message +
+      '). 로컬에서 열 때는 정적 서버로 실행하거나, 배포된 사이트에서 확인하세요.</p>';
+    return;
+  }
+  content.innerHTML = marked.parse(md);
+
+  // ① 이미지 경로 재작성 (../assets/ → assets/)
+  content.querySelectorAll('img').forEach(img => {
+    const s = img.getAttribute('src') || '';
+    if(s.startsWith('../assets/')) img.setAttribute('src', s.replace('../assets/', 'assets/'));
+  });
+
+  // ② mermaid 코드블록 → <div class="mermaid">
+  content.querySelectorAll('code.language-mermaid').forEach(code => {
+    const div = document.createElement('div');
+    div.className = 'mermaid';
+    div.id = 'mmd-' + (mmId++);
+    div.textContent = code.textContent;
+    const pre = code.closest('pre');
+    (pre || code).replaceWith(div);
+  });
+  if(window.mermaid){
+    try { await mermaid.run({ nodes: content.querySelectorAll('.mermaid') }); } catch(e){}
+  }
+
+  // ③ 나머지 코드블록 하이라이트
+  if(window.hljs){
+    content.querySelectorAll('pre code').forEach(el => { try { hljs.highlightElement(el); } catch(e){} });
+  }
+
+  // ④ 문서 내 .md 상호 링크는 리더 내 이동으로
+  content.querySelectorAll('a[href$=".md"]').forEach(a => {
+    const href = a.getAttribute('href') || '';
+    const m = href.match(/0(\d)-/);
+    if(m){ a.setAttribute('href', '#' + m[1]); }
+  });
+
+  window.scrollTo(0, 0);
+}
+
+function currentN(){
+  const h = parseInt(location.hash.slice(1), 10);
+  return (h >= 0 && h <= 6) ? h : 0;
+}
+window.addEventListener('hashchange', () => renderPart(currentN()));
+renderPart(currentN());
+</script>
+</body>
+</html>

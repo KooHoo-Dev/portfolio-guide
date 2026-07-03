@@ -34,8 +34,9 @@
 
 ```
 portfolio-guide-v2/
-├── index.html              # 허브 랜딩 (Pages 진입점: 01 가이드 문서(덱) · 02 레이아웃 카탈로그)
-├── src/                    # Part 0~6 Markdown 소스 (읽기용 가이드 본문)
+├── index.html              # 허브 랜딩 (Pages 진입점: 01 가이드 문서(덱) · 02 카탈로그 · 03 가이드 본문 리더)
+├── guide.html              # 온사이트 리더 — src/*.md(Part 0~6)를 marked+mermaid+hljs로 렌더
+├── src/                    # Part 0~6 Markdown 소스 (읽기용 가이드 본문 · guide.html의 데이터)
 │   └── _example-spec.md    # 관통 예제(크래프팅) 스펙 — 내부 참조용, 변경 금지 기준선
 ├── assets/diagrams/        # Mermaid 5종: PNG(렌더링본) + mmd(소스)
 ├── slides/                 # 발표 덱
