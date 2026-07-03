@@ -81,7 +81,7 @@
     <h1>가이드 본문</h1>
     <a class="hub" href="index.html">← 허브로</a>
     <nav class="nav" id="nav"></nav>
-    <div class="foot">읽기용 원문(Part 0~6). 다이어그램은 Mermaid로 실시간 렌더링됩니다.<br/>저자: 김재훈 (Jay / KooHoo)</div>
+    <div class="foot">읽기용 원문(Part 0~7). 다이어그램은 Mermaid로 실시간 렌더링됩니다.<br/>저자: 김재훈 (Jay / KooHoo)</div>
   </aside>
   <main class="main">
     <div class="wrap"><article class="md" id="content"><div class="loading">불러오는 중…</div></article></div>
@@ -97,6 +97,7 @@ const PARTS = [
   { n:4, file:'src/04-mermaid-diagrams.md',   title:'4 · Mermaid 다이어그램' },
   { n:5, file:'src/05-ai-workflow.md',        title:'5 · AI 활용 워크플로우' },
   { n:6, file:'src/06-prompts.md',            title:'6 · 좋은 레이아웃 프롬프트' },
+  { n:7, file:'src/07-deploy.md',             title:'7 · GitHub Pages 배포' },
 ];
 
 try { mermaid.initialize({ startOnLoad:false, theme:'default', securityLevel:'loose', fontFamily:'Pretendard, sans-serif' }); } catch(e){}
@@ -169,7 +170,7 @@ async function renderPart(n){
 
 function currentN(){
   const h = parseInt(location.hash.slice(1), 10);
-  return (h >= 0 && h <= 6) ? h : 0;
+  return (h >= 0 && h <= 7) ? h : 0;
 }
 window.addEventListener('hashchange', () => renderPart(currentN()));
 renderPart(currentN());

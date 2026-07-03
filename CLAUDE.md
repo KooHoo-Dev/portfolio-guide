@@ -16,7 +16,7 @@
 - **저자**: 김재훈 (Jay / KooHoo) — 유니티 강사, 1인 개발자.
 - **두 산출물**: ① Markdown 소스(GitHub Repo에서 읽기) ② 프레젠테이션(Marp 발표 덱 + React 쇼케이스).
 
-### 가이드 구성 (Part 0~6)
+### 가이드 구성 (Part 0~7)
 
 | Part | 파일 | 내용 |
 |---|---|---|
@@ -27,6 +27,7 @@
 | 4 | `src/04-mermaid-diagrams.md` | Mermaid 다이어그램 5종 (AI 생성 전제) |
 | 5 | `src/05-ai-workflow.md` | AI 활용 워크플로우 (웹 챗봇 기준) |
 | 6 | `src/06-prompts.md` | 좋은 레이아웃 프롬프트 모음 (한글, 복붙 카드) |
+| 7 | `src/07-deploy.md` | GitHub Pages(github.io) 배포 (브랜치 배포 주력 · Actions 심화) |
 
 ---
 
@@ -35,8 +36,8 @@
 ```
 portfolio-guide-v2/
 ├── index.html              # 허브 랜딩 (Pages 진입점: 01 가이드 문서(덱) · 02 카탈로그 · 03 가이드 본문 리더)
-├── guide.html              # 온사이트 리더 — src/*.md(Part 0~6)를 marked+mermaid+hljs로 렌더
-├── src/                    # Part 0~6 Markdown 소스 (읽기용 가이드 본문 · guide.html의 데이터)
+├── guide.html              # 온사이트 리더 — src/*.md(Part 0~7)를 marked+mermaid+hljs로 렌더
+├── src/                    # Part 0~7 Markdown 소스 (읽기용 가이드 본문 · guide.html의 데이터)
 │   └── _example-spec.md    # 관통 예제(크래프팅) 스펙 — 내부 참조용, 변경 금지 기준선
 ├── assets/diagrams/        # Mermaid 5종: PNG(렌더링본) + mmd(소스)
 ├── slides/                 # 발표 덱
@@ -194,6 +195,8 @@ marp presentation.md --theme theme.css --no-stdin --pdf --allow-local-files -o p
 - [x] **위키 원본 상세 반영** — KooHoo 위키 원본(JayDocs 4 + TechDocsDetail 7)의 디테일을
       `src/01`·`src/02`에 확장 반영(2026.07). 비유·👎👍 대비·자소서 항목별 세부지침·경험기반 스택 표·
       포트폴리오 상세문서 예시 표·PlayerPrefs vs JSON trade-off 등. 크래프팅 관통 예제는 보존, 정본 하나 유지.
+- [x] **Part 7 배포 편 신설** — `src/07-deploy.md`(GitHub Pages) 추가(2026.07). 브랜치 배포(입문 주력)+Actions(심화),
+      Mermaid 단계 흐름·비교 표·트러블슈팅(👎👍). 리더(`guide.html` PARTS+해시 클램프 0~7)·오리엔테이션 지도·README 통합.
 
 ---
 
